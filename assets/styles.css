@@ -124,6 +124,12 @@ section.s .lede { color: var(--fg-soft); font-size: 1.1rem; max-width: 720px; ma
 .download-tile .badge-soon { background: rgba(245, 158, 11, 0.15); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.35); padding: 0.1rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 600; }
 .download-meta { margin-top: 1.5rem; color: var(--muted); font-size: 0.85rem; }
 .download-meta code { background: #0a0c12; padding: 0.1rem 0.4rem; border-radius: 3px; color: var(--fg); }
+.install-walkthrough { margin-top: 1.5rem; padding: 1.25rem 1.5rem; background: rgba(245, 158, 11, 0.06); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: var(--radius); }
+.install-walkthrough h3 { font-family: var(--font-display); margin: 0 0 0.6rem; color: #fcd34d; font-size: 1rem; }
+.install-walkthrough ol { color: var(--fg-soft); padding-left: 1.25rem; margin: 0; font-size: 0.92rem; line-height: 1.7; }
+.install-walkthrough code { background: var(--bg); padding: 0.1rem 0.4rem; border-radius: 3px; font-size: 0.88em; color: var(--fg); }
+.install-walkthrough .muted-inline { color: var(--muted); font-size: 0.85em; }
+.install-walkthrough a { color: var(--brand); }
 
 /* ── Two-col explainer (Why offline) ────────────────────────────── */
 .twocol { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }

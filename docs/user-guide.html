@@ -78,19 +78,40 @@
   </div>
 
   <h2 id="install">1. Install</h2>
-  <p>NetGuard ships as a single binary per platform. Download from the <a href="../#download">downloads page</a>:</p>
+  <p>NetGuard ships as a single binary per platform, distributed inside a <code>.zip</code> wrapper. The zip exists to bypass Chrome / Edge's "uncommonly downloaded file" warning on the bare <code>.exe</code>; once you extract, the binary inside is the same single-file PyInstaller bundle.</p>
   <table>
     <thead><tr><th>Platform</th><th>File</th><th>Notes</th></tr></thead>
     <tbody>
-      <tr><td>Windows 10/11</td><td><code>netguard-0.1-windows-x64.exe</code></td><td>Uses Edge WebView2 (bundled with Win11)</td></tr>
-      <tr><td>macOS 13+</td><td><code>netguard-0.1-macos.dmg</code></td><td>Universal binary, Apple Silicon &amp; Intel</td></tr>
-      <tr><td>Linux x86_64</td><td><code>netguard-0.1-linux-x86_64.AppImage</code></td><td><code>chmod +x</code>, then run; WebKitGtk required for GUI</td></tr>
-      <tr><td>Python source</td><td><code>pip install inforelay-netguard</code></td><td>Use case: scripted/headless deployments</td></tr>
+      <tr><td>Windows 10/11</td><td><code>netguard-0.1-windows-x64.zip</code></td><td>Contains the .exe + SHA-256. Edge WebView2 (Win11 built-in)</td></tr>
+      <tr><td>macOS 13+</td><td><code>netguard-0.1-macos-arm64.zip</code></td><td>Apple Silicon native binary</td></tr>
+      <tr><td>Linux x86_64</td><td><code>netguard-0.1-linux-x86_64.AppImage</code></td><td><em>(coming soon — Linux Actions build is still resolving system deps)</em></td></tr>
+      <tr><td>Python source</td><td><code>pip install inforelay-netguard</code></td><td>Headless / scripted deployments</td></tr>
     </tbody>
   </table>
   <div class="callout">
-    <strong>Verify integrity.</strong> Every binary ships with a SHA-256 sum and Ed25519 signature published on this page. Verify before installation in a SCIF-adjacent context.
+    <strong>Verify integrity.</strong> Each zip contains the binary and a SHA-256 sum text file. Compare against the published sums on <a href="../#download">netguardir.com</a> before installation in any sensitive context.
   </div>
+
+  <h3>Windows install — step by step</h3>
+  <ol>
+    <li>Download <code>netguard-0.1-windows-x64.zip</code>.</li>
+    <li>Right-click the zip → <strong>Extract All…</strong> → choose a destination folder.</li>
+    <li>In the extracted folder, right-click <code>netguard-0.1-windows-x64.exe</code> → <strong>Properties</strong> → at the bottom of the General tab, tick <strong>Unblock</strong> → <strong>OK</strong>. (This clears the Mark-of-the-Web flag Windows added during download.)</li>
+    <li>Double-click the .exe. Windows SmartScreen will show <em>"Windows protected your PC"</em> the first time. Click <strong>More info</strong>, then <strong>Run anyway</strong>.</li>
+    <li>NetGuard opens in its own desktop window. CLI mode: open CMD or PowerShell in the same folder and run <code>netguard-0.1-windows-x64.exe --audit foo.cfg --ckl-out report.ckl</code>.</li>
+  </ol>
+  <div class="callout warn">
+    <strong>SmartScreen / AppLocker note for DoD shops:</strong> v0.1 builds are unsigned, so the SmartScreen warning is expected. v1.0 will ship EV-Authenticode signed — the publisher hash will be allowlist-ready for your AppLocker policy. For v0.1 evaluation in a restricted environment, ask your ISSO to whitelist by the SHA-256 published on the downloads page.
+  </div>
+
+  <h3>macOS install — step by step</h3>
+  <ol>
+    <li>Download <code>netguard-0.1-macos-arm64.zip</code>.</li>
+    <li>Double-click the zip to extract.</li>
+    <li>Move <code>netguard-0.1-macos-arm64</code> to <code>/Applications</code> or anywhere on your PATH.</li>
+    <li>The first time you run it, macOS Gatekeeper will block ("cannot be opened because Apple cannot check it for malicious software"). Open <strong>System Settings → Privacy &amp; Security</strong> → scroll to the netguard entry → click <strong>Open Anyway</strong>.</li>
+    <li>From terminal: <code>chmod +x netguard-0.1-macos-arm64 &amp;&amp; ./netguard-0.1-macos-arm64 --app</code></li>
+  </ol>
 
   <h2 id="first-run">2. First run</h2>
   <p>Launch the desktop app:</p>
