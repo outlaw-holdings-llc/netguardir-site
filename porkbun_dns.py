@@ -123,7 +123,7 @@ def main() -> int:
 
     sp = sub.add_parser("upsert", help="create-or-replace a DNS record")
     sp.add_argument("domain")
-    sp.add_argument("type", choices=["A", "AAAA", "CNAME", "TXT", "MX"])
+    sp.add_argument("type", choices=["A", "AAAA", "CNAME", "ALIAS", "TXT", "MX"])
     sp.add_argument("name", help="@ for apex, www for www, etc.")
     sp.add_argument("content")
     sp.add_argument("--ttl", type=int, default=600)
