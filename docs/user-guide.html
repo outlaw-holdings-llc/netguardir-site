@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NetGuard User Guide — InfoRelay</title>
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../assets/styles.css">
+<style>
+  main.doc { max-width: 880px; margin: 3rem auto; padding: 0 1.5rem 5rem; }
+  main.doc h1 { font-family: var(--font-display); font-size: 2.4rem; letter-spacing: -0.025em; margin: 0 0 0.5rem; }
+  main.doc .subtitle { color: var(--muted); margin-bottom: 2.5rem; font-size: 1.05rem; }
+  main.doc h2 { font-family: var(--font-display); font-size: 1.5rem; margin: 3rem 0 1rem; color: var(--brand); border-bottom: 1px solid var(--line); padding-bottom: 0.4rem; }
+  main.doc h3 { font-family: var(--font-display); font-size: 1.15rem; margin: 1.75rem 0 0.5rem; }
+  main.doc p, main.doc li { color: var(--fg-soft); }
+  main.doc code { background: var(--bg-soft); color: var(--fg); padding: 0.1rem 0.4rem; border-radius: 3px; font-size: 0.9em; }
+  main.doc pre { background: #0a0c12; border: 1px solid var(--line); border-radius: 8px; padding: 1rem 1.2rem; overflow-x: auto; font-size: 0.85rem; color: var(--fg); }
+  main.doc pre code { background: transparent; padding: 0; color: inherit; }
+  main.doc ul, main.doc ol { padding-left: 1.4rem; line-height: 1.65; }
+  main.doc .toc { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.25rem 1.5rem; margin: 1.5rem 0 2.5rem; }
+  main.doc .toc h4 { margin: 0 0 0.6rem; font-family: var(--font-display); font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  main.doc .toc ul { columns: 2; column-gap: 2rem; padding-left: 0; list-style: none; }
+  main.doc .toc li { margin: 0.25rem 0; }
+  main.doc .toc a { color: var(--fg-soft); }
+  main.doc table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.92rem; }
+  main.doc th, main.doc td { padding: 0.55rem 0.7rem; text-align: left; border-bottom: 1px solid var(--line-soft); }
+  main.doc th { color: var(--muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; border-bottom-color: var(--line); }
+  .callout { background: rgba(61, 108, 255, 0.07); border-left: 3px solid var(--brand); padding: 0.8rem 1rem; border-radius: 0 6px 6px 0; margin: 1.25rem 0; font-size: 0.95rem; }
+  .callout strong { color: var(--fg); }
+  .callout.warn { background: rgba(245, 158, 11, 0.08); border-left-color: var(--warn); }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a href="../" class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <defs><linearGradient id="ng-doc-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3d6cff"/><stop offset="100%" stop-color="#1737a8"/></linearGradient></defs>
+          <circle cx="32" cy="32" r="30" fill="url(#ng-doc-grad)"/>
+          <path d="M 32 14 L 48 22 V 34 Q 48 46 32 52 Q 16 46 16 34 V 22 Z" fill="#fff" opacity="0.92"/>
+          <path d="M 26 32 l 5 5 l 10 -12" fill="none" stroke="#1737a8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span class="brand-word"><span class="info">Info</span><span class="relay">Relay</span><span class="dot">·</span>NetGuard</span>
+    </a>
+    <nav class="primary">
+      <a href="../#features">Features</a>
+      <a href="../#download">Download</a>
+      <a href="user-guide.html">Docs</a>
+    </nav>
+  </div>
+</header>
+
+<main class="doc">
+  <h1>NetGuard User Guide</h1>
+  <p class="subtitle">v0.1 — from install to your first compliance binder.</p>
+
+  <div class="toc">
+    <h4>On this page</h4>
+    <ul>
+      <li><a href="#install">1. Install</a></li>
+      <li><a href="#first-run">2. First run</a></li>
+      <li><a href="#single">3. Single-device audit</a></li>
+      <li><a href="#batch">4. Batch audit</a></li>
+      <li><a href="#ssh">5. Live SSH-pull</a></li>
+      <li><a href="#outputs">6. Output artifacts</a></li>
+      <li><a href="#triage">7. Reading the findings</a></li>
+      <li><a href="#catalog">8. Catalog refresh</a></li>
+      <li><a href="#history">9. History &amp; drift</a></li>
+      <li><a href="#cli">10. CLI reference</a></li>
+      <li><a href="#binder">11. Compliance binder workflow</a></li>
+      <li><a href="#posture">12. Operating posture</a></li>
+      <li><a href="#troubleshooting">13. Troubleshooting</a></li>
+    </ul>
+  </div>
+
+  <h2 id="install">1. Install</h2>
+  <p>NetGuard ships as a single binary per platform. Download from the <a href="../#download">downloads page</a>:</p>
+  <table>
+    <thead><tr><th>Platform</th><th>File</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Windows 10/11</td><td><code>netguard-0.1-windows-x64.exe</code></td><td>Uses Edge WebView2 (bundled with Win11)</td></tr>
+      <tr><td>macOS 13+</td><td><code>netguard-0.1-macos.dmg</code></td><td>Universal binary, Apple Silicon &amp; Intel</td></tr>
+      <tr><td>Linux x86_64</td><td><code>netguard-0.1-linux-x86_64.AppImage</code></td><td><code>chmod +x</code>, then run; WebKitGtk required for GUI</td></tr>
+      <tr><td>Python source</td><td><code>pip install inforelay-netguard</code></td><td>Use case: scripted/headless deployments</td></tr>
+    </tbody>
+  </table>
+  <div class="callout">
+    <strong>Verify integrity.</strong> Every binary ships with a SHA-256 sum and Ed25519 signature published on this page. Verify before installation in a SCIF-adjacent context.
+  </div>
+
+  <h2 id="first-run">2. First run</h2>
+  <p>Launch the desktop app:</p>
+  <pre><code># Desktop window (recommended)
+netguard --app
+
+# Or as a Flask UI in your default browser
+netguard
+
+# Or one-shot CLI audit
+netguard --audit /path/to/running-config.cfg --ckl-out report.ckl</code></pre>
+
+  <p>The first launch builds the STIG catalog from the bundled DISA quarterly XCCDFs (~15 seconds). After that, audits run in &lt; 1 second per device.</p>
+
+  <h2 id="single">3. Single-device audit</h2>
+  <ol>
+    <li>Open the netguard window.</li>
+    <li>Paste a Cisco running-config into the textarea — <em>or</em> click "Upload" and select a single <code>.cfg</code> file.</li>
+    <li>Click <strong>Run audit</strong>.</li>
+    <li>The findings page renders with summary stats, FAILs (with Deviation block), MANUAL items triaged into Likely-N/A / Applicable / General review.</li>
+  </ol>
+
+  <h2 id="batch">4. Batch audit</h2>
+  <p>Same form, but select multiple files via the upload field (hold Shift / Ctrl while picking). When ≥ 2 files are uploaded, netguard redirects to the batch dashboard:</p>
+  <ul>
+    <li>Aggregate stats across the batch (total PASS / FAIL / MANUAL, plus triage bucket totals)</li>
+    <li>Per-device row with hostname, product, individual counts, "Details →" drilldown</li>
+    <li>One-click ZIP downloads: all CKLs, all annotated configs, all XLSX, plus a combined CSV</li>
+  </ul>
+  <div class="callout">Batch upload is synchronous and runs each audit in series. 50 devices typically completes in ~30 seconds on modern hardware.</div>
+
+  <h2 id="ssh">5. Live SSH-pull</h2>
+  <p>From the index page, click <strong>⚡ SSH-pull a live device</strong>. Fill in:</p>
+  <ul>
+    <li><strong>Host</strong>: device IP or DNS name</li>
+    <li><strong>Username</strong>: typically a dedicated <code>scan</code> account with privilege-15 read-only</li>
+    <li><strong>Password</strong>: scan account passcode (RSA-token logins are not supported here — use the fixed-passcode pattern)</li>
+    <li><strong>Enable secret</strong> (optional): only needed if the scan user requires <code>enable</code> to reach exec mode</li>
+    <li><strong>Device type</strong>: leave on Auto-detect unless you know the platform</li>
+  </ul>
+  <p>NetGuard SSHs to the device, pulls <code>show running-config</code> + <code>show version</code> + <code>show inventory</code>, parses the facts (hostname, model, software, serial, uptime), and runs the full audit pipeline. The Findings page links to the standard set of artifact downloads.</p>
+  <div class="callout warn"><strong>Credential hygiene.</strong> Passwords are held in process memory only for the duration of the pull — never logged, never written to disk. NetGuard never offers to "save" credentials; that's by design.</div>
+
+  <h2 id="outputs">6. Output artifacts</h2>
+  <table>
+    <thead><tr><th>Format</th><th>Use case</th></tr></thead>
+    <tbody>
+      <tr><td><code>.ckl</code></td><td>DISA STIG Viewer checklist. FINDING_DETAILS carries the Deviation (Expected/Actual/Patch); COMMENTS carries the L2 triage analysis. Open directly in STIG Viewer.</td></tr>
+      <tr><td><code>.annotated.cfg</code></td><td>The original running-config with <code>! STIG: V-XXX [STATUS]</code> comments injected above each affected line. Paste into the compliance binder; every line maps to its control in place.</td></tr>
+      <tr><td><code>.xlsx</code></td><td>5-tab Excel workbook: Summary / FAILs / MANUAL N/A / MANUAL applicable / All. Sortable, filterable.</td></tr>
+      <tr><td><code>.csv</code></td><td>Flat findings list for ad-hoc analysis or import to your GRC tool.</td></tr>
+      <tr><td>Print / PDF</td><td>The <strong>🖨 Print / PDF</strong> button opens a print-optimized view; use your browser's print-to-PDF for an executive-summary deliverable.</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="triage">7. Reading the findings</h2>
+  <h3>FAIL — Deviation engine</h3>
+  <p>Every FAIL shows four structured fields:</p>
+  <pre><code>Expected: exec-timeout ≤ 5 minutes (≤ 300 seconds)
+Actual:   line vty 0 4 → exec-timeout 9 59 (599s)
+At:       line vty 0 4 (line 291)
+Patch:
+  line vty 0 4
+   exec-timeout 5 0</code></pre>
+  <p>The Patch block contains the exact config commands to paste. Source-line refs let you navigate directly to the offending stanza.</p>
+
+  <h3>MANUAL — Triage buckets</h3>
+  <ul>
+    <li><strong>Likely Not Applicable</strong> — netguard's 25-topic classifier matched the rule against a feature the device doesn't have. Example: a BGP rule on a device that runs no BGP. <em>Admin still confirms</em>; we recommend but don't decide N/A.</li>
+    <li><strong>Applicable, review localized</strong> — the rule's feature is present on the device. NetGuard points at the relevant config region (e.g., "router eigrp 100, lines 166–173").</li>
+    <li><strong>General review</strong> — no topic match. Standard manual review required.</li>
+  </ul>
+
+  <h2 id="catalog">8. Catalog refresh</h2>
+  <p>Each DISA quarterly cycle, drop the new XCCDF zip into the <strong>📚 Catalog refresh</strong> page (linked from the index). NetGuard extracts safely under <code>stigs/</code> (zip-slip protected) and rebuilds the in-process catalog. No service restart required.</p>
+  <div class="callout">CLI equivalent: <code>netguard --build-stig-catalog stigs --catalog-out stigs/stig_catalog.json</code></div>
+
+  <h2 id="history">9. History &amp; drift</h2>
+  <p>Every config you submit (paste / upload / SSH-pull) is saved under <code>~/.netguard/configs/</code> with a sidecar metadata JSON. Open <strong>🗂 Audit history</strong> to see them all, newest-first.</p>
+  <p><strong>Re-audit →</strong> reruns the saved config against the current catalog — useful after a quarterly STIG release.</p>
+  <p><strong>Compare 2 selected →</strong> diffs two saved audits: NEW FAILs, RESOLVED items, status changes. Drift detection in one click.</p>
+
+  <h2 id="cli">10. CLI reference</h2>
+  <pre><code># Audit a single config
+netguard --audit foo.cfg [--ckl-out X --annotate-out Y --xlsx-out Z]
+
+# Live device, end-to-end
+netguard --pull HOST --user scan --audit-after [--out-dir ./pulls/]
+  # Produces in ./pulls/:
+  #   &lt;host&gt;-&lt;stamp&gt;.cfg
+  #   &lt;host&gt;-&lt;stamp&gt;.metadata.json
+  #   &lt;host&gt;-&lt;stamp&gt;.annotated.cfg
+  #   &lt;host&gt;-&lt;stamp&gt;.ckl
+  #   &lt;host&gt;-&lt;stamp&gt;.xlsx
+
+# Build / refresh the STIG catalog
+netguard --build-stig-catalog stigs --catalog-out stigs/stig_catalog.json
+
+# Launch the GUI
+netguard --app                  # native desktop window
+netguard                        # Flask + auto-opens browser
+netguard --no-browser           # Flask only (headless / remote-viewing)</code></pre>
+
+  <h2 id="binder">11. Compliance binder workflow</h2>
+  <ol>
+    <li><strong>Pull or upload all in-scope devices.</strong> Batch mode is fastest for ≥ 5 devices.</li>
+    <li><strong>Download every .ckl.</strong> Open in DISA STIG Viewer. Flip every "MANUAL · Likely N/A" item to NOT_APPLICABLE after confirming netguard's reasoning.</li>
+    <li><strong>Address FAILs.</strong> The Deviation block has the exact patch; coordinate the change with the device's owner via your change-management process.</li>
+    <li><strong>Print the PDF</strong> for the executive summary, paste the annotated <code>.cfg</code> into the technical binder, and attach the <code>.xlsx</code> for the analyst's working notes.</li>
+    <li><strong>Save the audit.</strong> The config is already persisted under <code>~/.netguard/configs/</code>; nothing more to do. Re-audit after the quarterly STIG cycle or after any device config change.</li>
+  </ol>
+
+  <h2 id="posture">12. Operating posture</h2>
+  <ul>
+    <li>Binds to <code>127.0.0.1</code> by default. Configs are processed in-process; nothing is sent over the network.</li>
+    <li>The only outbound traffic is SSH to operator-specified device IPs via <code>--pull</code>. Pass <code>--no-browser</code> or run only the CLI for fully-offline scripted use.</li>
+    <li>Credentials (SSH password, enable secret) live in memory for the duration of the pull; never written to disk.</li>
+    <li>Audit configs are saved in plaintext under <code>~/.netguard/configs/</code>. No encryption-at-rest in v0.1 — consult your IA posture if this needs to change.</li>
+    <li>No telemetry. No phone-home. No update checks. No external LLM. No model downloads.</li>
+  </ul>
+
+  <h2 id="troubleshooting">13. Troubleshooting</h2>
+  <h3>"No catalog loaded"</h3>
+  <p>NetGuard couldn't find the STIG catalog. Build it: <code>netguard --build-stig-catalog stigs --catalog-out stigs/stig_catalog.json</code>. Or import via the <strong>/catalog</strong> page in the UI.</p>
+
+  <h3>SSH-pull times out</h3>
+  <p>Confirm reachability: <code>ssh scan@HOST</code> from a terminal. If interactive SSH works but netguard fails, try <code>--device-type cisco_xe</code> (or your platform) instead of <code>auto</code>.</p>
+
+  <h3>Native window doesn't open on Linux</h3>
+  <p>WebKitGtk required: <code>sudo apt install python3-gi gir1.2-webkit2-4.0</code>. NetGuard auto-falls-back to your default browser if no webview backend is present.</p>
+
+  <h3>"Address already in use"</h3>
+  <p>Another netguard process is running. Find it (<code>pgrep -fa netguard</code>) and kill it, or pass <code>--port 9998</code> to use an alternate port.</p>
+
+  <h3>Where are the diagnostic logs?</h3>
+  <p><strong>/status</strong> page in the UI shows catalog state, registered checks, in-memory and persisted audit counts. For deeper diagnostics, run with <code>--debug</code> (coming in v0.2).</p>
+
+  <div class="callout">
+    <strong>Support &amp; security disclosure:</strong>
+    <a href="mailto:hello@netguardir.com">hello@netguardir.com</a>.
+    For security issues, encrypt to the Ed25519 key published on the downloads page.
+  </div>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="bottom">
+      <div>© 2026 Outlaw Holdings LLC · InfoRelay NetGuard™</div>
+      <div>Offline · Local-only · No telemetry · No external LLM</div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

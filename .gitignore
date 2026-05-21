@@ -1,0 +1,9 @@
+# Binary downloads — built by release pipeline, not version-controlled
+downloads/*.tar.gz
+downloads/*.exe
+downloads/*.dmg
+downloads/*.AppImage
+downloads/*.zip
+
+# Keep an empty downloads/ tracked so the directory exists
+!downloads/.gitkeep

@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>InfoRelay NetGuard — Offline Cisco STIG audit for air-gapped environments</title>
+<meta name="description" content="Catalog-driven DISA Cisco STIG audit, fully offline. Live SSH-pull, intelligent triage, STIG Viewer CKL output. Built for DoD and air-gapped networks.">
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a href="/" class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <defs><linearGradient id="ng-logo-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3d6cff"/><stop offset="100%" stop-color="#1737a8"/></linearGradient></defs>
+          <circle cx="32" cy="32" r="30" fill="url(#ng-logo-grad)"/>
+          <path d="M 32 14 L 48 22 V 34 Q 48 46 32 52 Q 16 46 16 34 V 22 Z" fill="#fff" opacity="0.92"/>
+          <path d="M 26 32 l 5 5 l 10 -12" fill="none" stroke="#1737a8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span class="brand-word">
+        <span class="info">Info</span><span class="relay">Relay</span><span class="dot">·</span>NetGuard
+      </span>
+    </a>
+    <nav class="primary">
+      <a href="#features">Features</a>
+      <a href="#workflow">Workflow</a>
+      <a href="#download">Download</a>
+      <a href="docs/user-guide.html">Docs</a>
+      <a href="#download" class="cta">Get NetGuard</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ── Hero ──────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">v0.1 · offline · on-prem · DoD-ready</span>
+    <h1>The Cisco STIG audit tool <span class="grad">that never touches the internet.</span></h1>
+    <p class="lede">
+      InfoRelay NetGuard ingests your Cisco running-configs, runs the full DISA quarterly STIG,
+      explains every finding in plain network-engineer language, and emits ready-to-file compliance
+      artifacts — DISA <code>.ckl</code>, annotated <code>.cfg</code>, Excel workbook, printable PDF.
+      Configs never leave the audit host.
+    </p>
+    <div class="cta-row">
+      <a href="#download" class="btn btn-primary">⬇ Download NetGuard</a>
+      <a href="docs/user-guide.html" class="btn btn-ghost">Read the docs</a>
+    </div>
+    <div class="meta-row">
+      <span>1,005 STIG rules across 9 Cisco product families</span>
+      <span>40–60% MANUAL-review reduction via L2 triage</span>
+      <span>No telemetry · No external LLM · No phone-home</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── Hero stage (terminal-style demo) ──────────────────────────────── -->
+<section class="stage">
+  <div class="wrap">
+    <div class="stage-wrap">
+      <div class="stage-frame">
+        <div class="stage-titlebar">
+          <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+          <span class="title">netguard — ~/audit · live SSH pull</span>
+        </div>
+        <div class="stage-body">
+          <div><span class="prompt">$</span> <span class="cmd">netguard --pull 10.50.0.12 --user scan --audit-after</span></div>
+          <div class="out">  Password for scan@10.50.0.12: <span style="color:#555">••••••••</span></div>
+          <div class="out">  <span class="info">→</span> SSH 10.50.0.12 · autodetected <span class="ok">cisco_xe</span></div>
+          <div class="out">  <span class="info">→</span> pulled 17,842 bytes of running-config · hostname <span class="ok">V1-9407R-1</span></div>
+          <div class="out">  <span class="info">→</span> product: <span class="ok">IOS-XE_Switch</span> · STIG: NDM, L2S, RTR</div>
+          <div class="out">  <span class="info">→</span> 153 rules audited · <span class="ok">10 PASS</span> · <span class="fail">6 FAIL</span> · 137 MANUAL</div>
+          <div class="out">       MANUAL triage: <span class="info">35 likely-N/A · 102 applicable · 0 unknown</span></div>
+          <div class="out">  <span class="arrow">✓</span> <span class="fail">V-220544 FAIL</span> — vty 0 4 exec-timeout 9:59 (need ≤ 5 min)</div>
+          <div class="out" style="padding-left:1.5rem">     Patch: <code style="color:#c0e0ff">line vty 0 4 / exec-timeout 5 0</code></div>
+          <div class="out">  <span class="arrow">✓</span> Saved: <span class="ok">V1-9407R-1-20260521.ckl</span> · <span class="ok">.annotated.cfg</span> · <span class="ok">.xlsx</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Features ──────────────────────────────────────────────────────── -->
+<section class="s" id="features">
+  <div class="wrap">
+    <span class="kicker">What it does</span>
+    <h2>Catalog-driven. Intelligence-augmented. Audit-trail-ready.</h2>
+    <p class="lede">Every applicable Vuln_Num produces a row. Every FAIL carries the exact remediation. Every MANUAL is triaged with engineering reasoning so the review pile drops 40–60% before the auditor opens it.</p>
+
+    <div class="features">
+      <article class="feature">
+        <div class="icon">📚</div>
+        <h3>1,005 STIG rules · 9 product families</h3>
+        <p>Pre-ingested DISA quarterly bundle for IOS, IOS-XE Switch + Router, NX-OS Switch, ACI, ASA, IOS-XR, ISE, Wireless. Drop the next quarterly zip → catalog rebuilds in-process.</p>
+      </article>
+      <article class="feature">
+        <div class="icon">🎯</div>
+        <h3>L1 — Deviation engine</h3>
+        <p>Every FAIL carries <code>Expected / Actual / At-line / Patch</code>. The operator gets the exact commands to paste, with source-line refs into their config. No more "V-220544 failed" with no context.</p>
+      </article>
+      <article class="feature">
+        <div class="icon">🧠</div>
+        <h3>L2 — MANUAL triage</h3>
+        <p>25-topic protocol classifier scans every MANUAL rule. Marks "likely N/A" with engineer's reasoning ("Device runs no BGP — routing is via EIGRP AS 65000 on lines 145–158") or "applicable, review lines X–Y".</p>
+      </article>
+      <article class="feature">
+        <div class="icon">⚡</div>
+        <h3>Live SSH pull</h3>
+        <p><code>netguard --pull HOST --audit-after</code>. Autodetects IOS / IOS-XE / NX-OS / IOS-XR via Netmiko. Pulls <code>show running</code> + facts (model, serial, software) and chains audit + annotation + CKL.</p>
+      </article>
+      <article class="feature">
+        <div class="icon">📊</div>
+        <h3>Real audit artifacts</h3>
+        <p>DISA <code>.ckl</code> drops into STIG Viewer. Annotated <code>.cfg</code> for the compliance binder. Excel workbook for analyst review. Printable PDF for the executive summary. All produced in one click.</p>
+      </article>
+      <article class="feature">
+        <div class="icon">📦</div>
+        <h3>Batch mode</h3>
+        <p>Drop 50 configs at once → aggregate dashboard with per-device drill-down + one-click ZIP downloads of every CKL, every annotated config, every workbook.</p>
+      </article>
+      <article class="feature">
+        <div class="icon">🔁</div>
+        <h3>Drift detection</h3>
+        <p>Pick two saved audits, compare. NetGuard re-audits both against the current catalog and shows: NEW FAILs, RESOLVED, status changes. Use after every quarterly STIG release.</p>
+      </article>
+      <article class="feature">
+        <div class="icon">🔒</div>
+        <h3>Air-gap clean</h3>
+        <p>Binds to <code>127.0.0.1</code> only. The only outbound traffic is SSH to operator-specified targets. No telemetry. No phone-home. No external LLM, ever. Suitable for SCIF-adjacent admin workstations.</p>
+      </article>
+      <article class="feature">
+        <div class="icon">🖥</div>
+        <h3>Native desktop app</h3>
+        <p>Single-binary install. Double-click to launch — own window, own title bar, no browser tab. CLI mode available for headless / scripted use.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ── Workflow ──────────────────────────────────────────────────────── -->
+<section class="s" id="workflow">
+  <div class="wrap">
+    <span class="kicker">End-to-end</span>
+    <h2>From a config you don't trust to a checklist you can file.</h2>
+    <p class="lede">Three input modes, one pipeline, four artifact types. Nothing leaves the box.</p>
+
+    <div class="workflow">
+      <div class="workflow-steps">
+        <div class="workflow-step">
+          <div class="num">1</div>
+          <h4>Ingest</h4>
+          <p>Paste a config, upload a folder of <code>.cfg</code> files, or have netguard SSH to your devices with the scan account.</p>
+        </div>
+        <div class="workflow-step">
+          <div class="num">2</div>
+          <h4>Detect</h4>
+          <p>Product family auto-inferred (IOS-XE switch vs router, NX-OS, IOS-XR). Catalog-driven audit selects only the STIGs that apply.</p>
+        </div>
+        <div class="workflow-step">
+          <div class="num">3</div>
+          <h4>Audit + Triage</h4>
+          <p>Every applicable Vuln_Num produces a finding. Auto-checks PASS/FAIL with Deviation. Manual items get an engineer's note for likely N/A vs applicable.</p>
+        </div>
+        <div class="workflow-step">
+          <div class="num">4</div>
+          <h4>File</h4>
+          <p>Download CKL → STIG Viewer. Annotated <code>.cfg</code> → compliance binder. XLSX → analyst review. Print → PDF for the exec summary.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Why offline ───────────────────────────────────────────────────── -->
+<section class="s">
+  <div class="wrap">
+    <div class="twocol">
+      <div class="text">
+        <span class="kicker">Why offline</span>
+        <h2>Your configs are not training data.</h2>
+        <p style="color:var(--fg-soft); font-size:1.05rem;">
+          Built for environments where running-configs cannot leave the perimeter:
+          air-gapped admin workstations, STIG'd networks, SCIF-adjacent enclaves,
+          and any DoD posture where "calls home" is a non-starter.
+        </p>
+        <p style="color:var(--muted); font-size:0.95rem;">
+          We deliberately stop at the edge of external LLM. The "intelligence" you
+          see — the Deviation engine, the MANUAL triage — is rule-driven Python that
+          you can vet line-by-line. No models. No API calls. No outbound traffic
+          except to the devices you point it at.
+        </p>
+      </div>
+      <div class="panel">
+        <strong style="color:var(--fg); font-family:var(--font-display);">netguard posture</strong>
+        <ul>
+          <li>Binds <code>127.0.0.1</code> only by default</li>
+          <li>SSH-pull is the only outbound traffic — and only to IPs you specify</li>
+          <li>Credentials live in process memory for the duration of the pull; never written to disk</li>
+          <li>Audit configs persist under <code>~/.netguard/configs/</code></li>
+          <li>No telemetry. No phone-home. No external LLM. No exceptions.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Download ──────────────────────────────────────────────────────── -->
+<section class="s" id="download">
+  <div class="wrap">
+    <span class="kicker">Get NetGuard</span>
+    <h2>Download v0.1 · Free for evaluation</h2>
+    <p class="lede">Single-binary builds for Windows, macOS, Linux. SHA-256 + Ed25519 signatures published alongside.</p>
+
+    <div class="download-card">
+      <div class="download-grid">
+        <a href="downloads/netguard-0.1-windows-x64.exe" class="download-tile">
+          <div class="os">🪟 Windows <span class="badge-soon">SOON</span></div>
+          <div class="desc">10/11 x64 · Edge WebView2</div>
+          <div class="filename">netguard-0.1-windows-x64.exe</div>
+        </a>
+        <a href="downloads/netguard-0.1-macos.dmg" class="download-tile">
+          <div class="os">🍎 macOS <span class="badge-soon">SOON</span></div>
+          <div class="desc">13+ · Apple Silicon &amp; Intel</div>
+          <div class="filename">netguard-0.1-macos.dmg</div>
+        </a>
+        <a href="downloads/netguard-0.1-linux-x86_64.AppImage" class="download-tile">
+          <div class="os">🐧 Linux <span class="badge-soon">SOON</span></div>
+          <div class="desc">AppImage · x86_64 · WebKitGtk</div>
+          <div class="filename">netguard-0.1-linux-x86_64.AppImage</div>
+        </a>
+        <a href="downloads/inforelay-netguard-0.1-src.tar.gz" class="download-tile">
+          <div class="os">📦 Source</div>
+          <div class="desc">Build it yourself · vet every line</div>
+          <div class="filename">inforelay-netguard-0.1-src.tar.gz</div>
+        </a>
+      </div>
+      <div class="download-meta">
+        Already have Python? <code>pip install inforelay-netguard</code>, then
+        <code>netguard --app</code> for the native window or <code>netguard --audit foo.cfg</code> for the CLI.
+        See the <a href="docs/user-guide.html">user guide</a> for the full walkthrough.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Tools family ──────────────────────────────────────────────────── -->
+<section class="s">
+  <div class="wrap">
+    <span class="kicker">The NetGuard family</span>
+    <h2>One brand. A growing toolbox.</h2>
+    <p class="lede">NetGuard is InfoRelay's tools spin-off — offline, on-prem, intelligent network engineering utilities. Audit is the first; more are on the way.</p>
+
+    <div class="tools-grid">
+      <div class="tool-card live">
+        <span class="status">LIVE</span>
+        <h3>NetGuard Audit</h3>
+        <p>This product — DISA Cisco STIG audit, MANUAL triage, CKL / annotated.cfg / XLSX / PDF outputs, live SSH pull.</p>
+      </div>
+      <div class="tool-card roadmap">
+        <span class="status">2026 Q3</span>
+        <h3>NetGuard Trace</h3>
+        <p>"Can workstation 10.20.10.45 reach Call Manager 10.50.0.100 on tcp/2000?" Walks L2/L3/ACL/routing across every audited device to find the break.</p>
+      </div>
+      <div class="tool-card roadmap">
+        <span class="status">2026 Q4</span>
+        <h3>NetGuard Drift</h3>
+        <p>Continuous config-drift detection across your inventory. Alerts on baseline divergence without ever sending the configs anywhere.</p>
+      </div>
+      <div class="tool-card roadmap">
+        <span class="status">2027</span>
+        <h3>NetGuard Multi-vendor</h3>
+        <p>PAN-OS (Palo Alto) and JunOS (Juniper) STIG audit modules with the same Deviation + Triage intelligence layer.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FAQ ───────────────────────────────────────────────────────────── -->
+<section class="s">
+  <div class="wrap">
+    <span class="kicker">FAQ</span>
+    <h2>The questions a DoD ISSO asks first.</h2>
+
+    <div class="faq">
+      <details>
+        <summary>Does NetGuard ever make external network calls?</summary>
+        <div class="answer">No. The Flask UI binds to <code>127.0.0.1</code> only. The single exception is the <code>--pull</code> feature, which makes an SSH connection to operator-specified device IPs — never to anywhere else. No telemetry, no update checks, no analytics.</div>
+      </details>
+      <details>
+        <summary>What's the difference vs. SCAP Compliance Checker (SCC) or Evaluate-STIG?</summary>
+        <div class="answer">SCC and Evaluate-STIG are general SCAP/STIG scanners. NetGuard is purpose-built for Cisco network devices — same audit, plus the Deviation engine (Expected / Actual / Patch on every FAIL), MANUAL triage with engineering reasoning, live SSH pull, CKL export, and a native desktop app. The output drops into your existing STIG Viewer workflow.</div>
+      </details>
+      <details>
+        <summary>What Cisco platforms are supported?</summary>
+        <div class="answer">v0.1 ships the full DISA catalog for IOS, IOS-XE (Switch + Router), NX-OS Switch, ACI, ASA, IOS-XR, ISE, and Wireless — 1,005 rules across 9 product families. Auto-detection picks the right STIG set; you can override with <code>--product</code>.</div>
+      </details>
+      <details>
+        <summary>How are STIG catalogs updated?</summary>
+        <div class="answer">Drop the next DISA quarterly zip into the <code>/catalog</code> page in the UI (or <code>netguard --build-stig-catalog</code> on the CLI). NetGuard extracts safely under <code>./stigs/</code> and rebuilds the cache in-process. No service restart.</div>
+      </details>
+      <details>
+        <summary>Will it run on my air-gapped admin workstation?</summary>
+        <div class="answer">Yes. Single-binary install, no Python runtime needed on the target. The DISA STIG bundle ships with the binary (public-domain XCCDF). The only inbound port is <code>127.0.0.1:9999</code> for the UI; no firewall changes required.</div>
+      </details>
+      <details>
+        <summary>Licensing model?</summary>
+        <div class="answer">Per-site tiered: <strong>Standard</strong> (100 devices), <strong>Pro</strong> (250), <strong>Enterprise</strong> (1,000+). Ed25519-signed license file with hardware-fingerprint binding. Evaluation tier ships unrestricted for 30 days — exact pricing announced before v1.0 release.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ────────────────────────────────────────────────────────── -->
+<footer class="site">
+  <div class="wrap">
+    <div class="grid">
+      <div class="col">
+        <a href="/" class="brand" style="margin-bottom:1rem;">
+          <span class="brand-mark">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+              <defs><linearGradient id="ng-foot-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3d6cff"/><stop offset="100%" stop-color="#1737a8"/></linearGradient></defs>
+              <circle cx="32" cy="32" r="30" fill="url(#ng-foot-grad)"/>
+              <path d="M 32 14 L 48 22 V 34 Q 48 46 32 52 Q 16 46 16 34 V 22 Z" fill="#fff" opacity="0.92"/>
+              <path d="M 26 32 l 5 5 l 10 -12" fill="none" stroke="#1737a8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="brand-word">
+            <span class="info">Info</span><span class="relay">Relay</span><span class="dot">·</span>NetGuard
+          </span>
+        </a>
+        <p style="font-size:0.88rem;">Offline, on-prem network engineering tools. Built for environments where configs never leave the perimeter.</p>
+      </div>
+      <div class="col">
+        <h4>Product</h4>
+        <a href="#features">Features</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#download">Download</a>
+        <a href="docs/user-guide.html">Documentation</a>
+      </div>
+      <div class="col">
+        <h4>Family</h4>
+        <a href="#">NetGuard Audit</a>
+        <a href="#">NetGuard Trace (soon)</a>
+        <a href="#">NetGuard Drift (soon)</a>
+      </div>
+      <div class="col">
+        <h4>Contact</h4>
+        <a href="mailto:hello@netguardir.com">hello@netguardir.com</a>
+        <a href="#">Security disclosure</a>
+        <a href="#">License inquiries</a>
+      </div>
+    </div>
+    <div class="bottom">
+      <div>© 2026 Outlaw Holdings LLC · InfoRelay NetGuard™</div>
+      <div>Offline · Local-only · No telemetry · No external LLM</div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
