@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>InfoRelay CertGuard — Windows-CA-aware cert tool for AD CS environments</title>
+<meta name="description" content="Generate keys + CSRs, talk to Microsoft AD CS issuing CAs across multiple domains, convert between every common cert format. Built for the Windows-CA reality, ships as a single offline binary.">
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/assets/styles.css">
+<style>
+  /* CertGuard accent overrides — same brand spine, green accent so users
+     can visually tell this is the "cert" tool in the suite. */
+  :root {
+    --accent: #16a34a;
+    --accent-deep: #166534;
+  }
+  .cg-grad { background: linear-gradient(110deg, #fff 30%, #34d399 60%, #16a34a 90%); background-clip: text; -webkit-background-clip: text; color: transparent; }
+  .eyebrow.cg { background: rgba(22, 163, 74, 0.12); color: #86efac; border-color: rgba(22, 163, 74, 0.35); }
+  .btn-primary.cg { background: linear-gradient(135deg, #16a34a 0%, #166534 100%); box-shadow: 0 6px 20px rgba(22, 163, 74, 0.30); }
+  .btn-primary.cg:hover { box-shadow: 0 10px 28px rgba(22, 163, 74, 0.40); }
+  .kicker.cg { color: #34d399; }
+  .feature.cg .icon { background: rgba(22, 163, 74, 0.14); border-color: rgba(22, 163, 74, 0.35); color: #34d399; }
+  .feature.cg:hover { border-color: rgba(22, 163, 74, 0.45); }
+  .stage-body .ok    { color: #6ee7b7; }
+  .stage-body .fail  { color: #fca5a5; }
+  .stage-body .acc   { color: #34d399; }
+  .pki-tree { font-family: var(--font-mono); font-size: 0.88rem; color: var(--fg-soft); line-height: 1.7; background: var(--bg-soft); border: 1px solid var(--line); border-radius: 8px; padding: 1rem 1.25rem; margin: 0.75rem 0; }
+  .pki-tree .root { color: #fcd34d; }
+  .pki-tree .ica  { color: #34d399; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a href="/" class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <defs><linearGradient id="ng-cg-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3d6cff"/><stop offset="100%" stop-color="#1737a8"/></linearGradient></defs>
+          <circle cx="32" cy="32" r="30" fill="url(#ng-cg-grad)"/>
+          <path d="M 32 14 L 48 22 V 34 Q 48 46 32 52 Q 16 46 16 34 V 22 Z" fill="#fff" opacity="0.92"/>
+          <path d="M 26 32 l 5 5 l 10 -12" fill="none" stroke="#1737a8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span class="brand-word">
+        <span class="info">Info</span><span class="relay">Relay</span><span class="dot">·</span>NetGuard
+      </span>
+    </a>
+    <nav class="primary">
+      <a href="/">Audit</a>
+      <a href="/certguard/" style="color:#34d399;">CertGuard</a>
+      <a href="#features">Features</a>
+      <a href="#download">Download</a>
+      <a href="/docs/user-guide.html">Docs</a>
+      <a href="#download" class="cta" style="background:linear-gradient(135deg,#16a34a,#166534);">Get CertGuard</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ── Hero ──────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow cg">v0.1 · Windows AD CS · multi-domain · ships offline</span>
+    <h1>The cert tool <span class="cg-grad">built for the Microsoft CA reality.</span></h1>
+    <p class="lede">
+      Generate keys + CSRs locally. Convert between every common cert format (PEM, DER, PKCS#7, PFX/PKCS#12). Inspect any cert / CSR / key file. Talk to your Microsoft Issuing CAs across multiple domains — even when they sit under one offline root. Built because <em>certsrv in a modern browser</em> stopped working, and openssl alone doesn't know how to talk to AD CS.
+    </p>
+    <div class="cta-row">
+      <a href="#download" class="btn btn-primary cg">⬇ Download CertGuard</a>
+      <a href="#features" class="btn btn-ghost">See features</a>
+    </div>
+    <div class="meta-row">
+      <span>Local crypto · no telemetry</span>
+      <span>Multi-domain AD CS inventory</span>
+      <span>Single-binary install · 19 MB</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── Terminal demo ─────────────────────────────────────────────────── -->
+<section class="stage">
+  <div class="wrap">
+    <div class="stage-wrap">
+      <div class="stage-frame">
+        <div class="stage-titlebar">
+          <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+          <span class="title">certguard — build a CSR for a Web Server template</span>
+        </div>
+        <div class="stage-body">
+          <div><span class="prompt">$</span> <span class="cmd">certguard</span></div>
+          <div class="out">  <span class="acc">→</span> InfoRelay CertGuard 0.1.0  ·  GUI window opening</div>
+          <div class="out"></div>
+          <div class="out">  <span class="acc">▸</span> Generate keypair → RSA 2048 (encrypted with passphrase)</div>
+          <div class="out">  <span class="acc">▸</span> Build CSR:</div>
+          <div class="out">       CN=ica-nmc-01.nmc.example.com</div>
+          <div class="out">       O=Outlaw Holdings  ·  OU=NetGuard  ·  C=US</div>
+          <div class="out">       SAN: <span class="ok">DNS:ica-nmc-01.nmc.example.com, DNS:nmc01, IP:10.50.0.12</span></div>
+          <div class="out">       EKU: <span class="ok">serverAuth, clientAuth</span></div>
+          <div class="out">       Template hint: <span class="ok">WebServer</span></div>
+          <div class="out">  <span class="acc">✓</span> CSR built · signature valid · 1131 bytes PEM</div>
+          <div class="out"></div>
+          <div class="out">  <span class="acc">▸</span> Submit to <span class="ok">ICA-NMC</span> (NTLM auth, NMC\scan-user)</div>
+          <div class="out">  <span class="acc">→</span> Cert issued · serial 7a3c9...  ·  valid 2 years</div>
+          <div class="out">  <span class="acc">▸</span> Bundle into PFX with chain → OCA-SBX root + ICA-NMC + leaf + key</div>
+          <div class="out">  <span class="acc">✓</span> Saved: <span class="ok">ica-nmc-01.pfx</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Features ──────────────────────────────────────────────────────── -->
+<section class="s" id="features">
+  <div class="wrap">
+    <span class="kicker cg">What it does</span>
+    <h2>Every cert operation an admin actually does, in one tool.</h2>
+    <p class="lede">No more openssl one-liners + IIS GUI + multiple template-page round-trips. CertGuard handles the whole CSR-to-PFX lifecycle and talks AD CS HTTP natively.</p>
+
+    <div class="features">
+      <article class="feature cg">
+        <div class="icon">🔑</div>
+        <h3>Generate keys</h3>
+        <p>RSA 2048/3072/4096, ECDSA P-256/P-384/P-521, Ed25519. Optional AES-256 passphrase. PKCS#8 PEM by default. Crypto runs in-process.</p>
+      </article>
+      <article class="feature cg">
+        <div class="icon">📝</div>
+        <h3>Build CSRs</h3>
+        <p>Full Subject DN, SAN list (DNS / IP / email / URI / UPN), EKU checklist, AD CS template hint embedded as the Microsoft template-name extension. SHA-256/384/512 signatures.</p>
+      </article>
+      <article class="feature cg">
+        <div class="icon">🔁</div>
+        <h3>Convert any format</h3>
+        <p>Auto-detect <code>PEM</code> / <code>DER</code> / <code>PKCS#7</code> / <code>PFX/PKCS#12</code> input. Output to any of the same. Attach or strip keys. Bundle chain certs. Set new PFX passphrases.</p>
+      </article>
+      <article class="feature cg">
+        <div class="icon">🔍</div>
+        <h3>Inspect anything</h3>
+        <p>Drop in a cert / CSR / chain / key. Get subject, issuer, validity, SANs, EKUs, key usage, CA flag, fingerprints, days-to-expire — without typing a single <code>openssl x509</code> command.</p>
+      </article>
+      <article class="feature cg">
+        <div class="icon">🏛</div>
+        <h3>Multi-domain CA inventory</h3>
+        <p>Configure each issuing CA you care about. Per-CA: hostname, domain, auth type (NTLM / Kerberos / Basic), default template. Topology-aware — knows offline-root vs issuing.</p>
+      </article>
+      <article class="feature cg">
+        <div class="icon">📤</div>
+        <h3>AD CS HTTP submission <span class="badge-soon">v0.2</span></h3>
+        <p>POST CSR + template to <code>https://&lt;ica&gt;/certsrv/certfnsh.asp</code> with NTLM auth, poll <code>certnew.cer</code>, handle pending-approval state. Auto-chain into PFX.</p>
+      </article>
+      <article class="feature cg">
+        <div class="icon">🔒</div>
+        <h3>Keys never leave the box</h3>
+        <p>Private keys are generated and shown once. They aren't logged, persisted server-side, or transmitted anywhere. Bring an existing key file or generate one in-flight — your choice.</p>
+      </article>
+      <article class="feature cg">
+        <div class="icon">🖥</div>
+        <h3>Native desktop app</h3>
+        <p>Single binary. Double-click → real window via Edge WebView2 / WKWebView / WebKitGtk. No Python runtime. No browser tab. CLI still available for scripted use.</p>
+      </article>
+      <article class="feature cg">
+        <div class="icon">🧭</div>
+        <h3>Same suite, different tool</h3>
+        <p>Built alongside <a href="/">NetGuard Audit</a> — same brand, same install pattern, separate trust model. Run both at once on different ports. Single suite, focused tools.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ── Why ──────────────────────────────────────────────────────────── -->
+<section class="s">
+  <div class="wrap">
+    <div class="twocol">
+      <div class="text">
+        <span class="kicker cg">Why we built it</span>
+        <h2>Modern browsers + Microsoft certsrv = pain.</h2>
+        <p style="color:var(--fg-soft); font-size:1.05rem;">
+          Edge and Chrome dropped the ActiveX controls that <code>certsrv</code>'s
+          original page depended on. <code>certreq.exe</code> works but only on a
+          domain-joined Windows host. <code>openssl</code> is great for the crypto
+          but has no idea what an AD CS template is, no NTLM client, no clue
+          about CES/CEP, and no notion of how to keep certs from two different
+          ICAs across two different domains organized.
+        </p>
+        <p style="color:var(--muted); font-size:0.95rem;">
+          CertGuard plugs that gap. It does the openssl-equivalent operations
+          locally (no shell-outs, no native libs to bundle), and it knows how to
+          talk AD CS HTTP enrollment across multiple domains under one umbrella
+          root — the topology DoD and regulated shops actually run.
+        </p>
+      </div>
+      <div class="panel">
+        <strong style="color:var(--fg); font-family:var(--font-display);">Reference topology supported out of the box</strong>
+        <div class="pki-tree">
+<span class="root">OCA-SBX</span>  (offline root, never reached over the network)
+   │
+   ├── <span class="ica">ICA-NMC</span>    domain: NMC
+   │       └── templates: WebServer, User, DomainController, …
+   │
+   └── <span class="ica">ICA-IESS</span>   domain: IESS
+           └── templates: WebServer, User, DomainController, …
+        </div>
+        <p style="font-size:0.85rem;color:var(--muted);margin:0.5rem 0 0;">
+          CertGuard seeds this on first run so the CA inventory page renders
+          something sensible. Adjust the hostnames + domains to match your
+          environment and you're configured.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Workflow ──────────────────────────────────────────────────────── -->
+<section class="s">
+  <div class="wrap">
+    <span class="kicker cg">End-to-end</span>
+    <h2>From subject DN to deployed PFX.</h2>
+
+    <div class="workflow">
+      <div class="workflow-steps">
+        <div class="workflow-step">
+          <div class="num" style="background:linear-gradient(135deg,#16a34a,#166534);">1</div>
+          <h4>Build CSR</h4>
+          <p>Subject DN + SANs + EKUs. Generate a key in-flight or bring your own.</p>
+        </div>
+        <div class="workflow-step">
+          <div class="num" style="background:linear-gradient(135deg,#16a34a,#166534);">2</div>
+          <h4>Submit to ICA</h4>
+          <p>Pick the issuing CA, pick the template. NTLM / Kerberos / Basic auth. <span class="muted">(v0.2)</span></p>
+        </div>
+        <div class="workflow-step">
+          <div class="num" style="background:linear-gradient(135deg,#16a34a,#166534);">3</div>
+          <h4>Bundle the chain</h4>
+          <p>OCA-SBX root + ICA leaf + your issued cert + key → PFX in one click.</p>
+        </div>
+        <div class="workflow-step">
+          <div class="num" style="background:linear-gradient(135deg,#16a34a,#166534);">4</div>
+          <h4>Deploy</h4>
+          <p>Or convert to whatever format your target needs. Inspect to verify.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Download ──────────────────────────────────────────────────────── -->
+<section class="s" id="download">
+  <div class="wrap">
+    <span class="kicker cg">Get CertGuard</span>
+    <h2>Download v0.1 · Free for evaluation</h2>
+    <p class="lede">Single-binary build per platform. ~19 MB. No Python install required on the target.</p>
+
+    <div class="download-card" style="border-color:rgba(22,163,74,0.3);background:linear-gradient(160deg, rgba(22,163,74,0.08) 0%, rgba(20,83,45,0.04) 100%);">
+      <div class="download-grid">
+        <a href="https://downloads.netguardir.com/certguard/certguard-0.1-windows-x64.zip" class="download-tile">
+          <div class="os">🪟 Windows</div>
+          <div class="desc">10/11 x64 · Edge WebView2</div>
+          <div class="filename">certguard-0.1-windows-x64.zip</div>
+        </a>
+        <a href="https://downloads.netguardir.com/certguard/certguard-0.1-macos-arm64.zip" class="download-tile">
+          <div class="os">🍎 macOS</div>
+          <div class="desc">Apple Silicon · 13+</div>
+          <div class="filename">certguard-0.1-macos-arm64.zip</div>
+        </a>
+        <a href="https://downloads.netguardir.com/certguard/certguard-0.1-linux-x86_64.zip" class="download-tile">
+          <div class="os">🐧 Linux</div>
+          <div class="desc">x86_64 · GTK + WebKit2</div>
+          <div class="filename">certguard-0.1-linux-x86_64.zip</div>
+        </a>
+      </div>
+      <div class="install-walkthrough" style="background:rgba(22,163,74,0.06);border-color:rgba(22,163,74,0.25);">
+        <h3 style="color:#86efac;">Installing on Windows</h3>
+        <ol>
+          <li>Download <code>certguard-0.1-windows-x64.zip</code>.</li>
+          <li>Right-click the zip → <strong>Extract All…</strong></li>
+          <li>Right-click <code>certguard-0.1-windows-x64.exe</code> → <strong>Properties</strong> → tick <strong>Unblock</strong> → <strong>OK</strong>.</li>
+          <li>Double-click the .exe. Windows SmartScreen will warn (unsigned in v0.1). Click <strong>More info → Run anyway</strong>.</li>
+          <li>CertGuard opens in its own desktop window on <code>127.0.0.1:9988</code>.</li>
+        </ol>
+        <p class="muted-inline" style="margin-top:0.5rem;">Need NetGuard Audit at the same time? They run on different ports (NetGuard 9999, CertGuard 9988). Both can be open simultaneously.</p>
+      </div>
+      <div class="download-meta">
+        Already have Python? <code>pip install inforelay-certguard</code>, then <code>certguard</code> for the native window.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FAQ ───────────────────────────────────────────────────────────── -->
+<section class="s">
+  <div class="wrap">
+    <span class="kicker cg">FAQ</span>
+    <h2>The questions Windows-CA admins ask first.</h2>
+
+    <div class="faq">
+      <details>
+        <summary>Does CertGuard need access to the offline root?</summary>
+        <div class="answer">No. CertGuard talks only to the issuing CAs you configure. The offline root (in Chris's reference topology, <code>OCA-SBX</code>) is captured in the CA inventory so its public cert can be bundled into PFX/PKCS#12 chain outputs, but no traffic is sent to it.</div>
+      </details>
+      <details>
+        <summary>How does it authenticate to AD CS?</summary>
+        <div class="answer">v0.2 ships NTLM (the most common AD CS deployment), Kerberos (where AD is reachable), and HTTP Basic (for lab CAs). Per-CA auth choice. Credentials live in memory only for the duration of one request — never written to disk.</div>
+      </details>
+      <details>
+        <summary>What about multiple domains?</summary>
+        <div class="answer">CertGuard's CA inventory captures a per-CA <strong>domain</strong> field that becomes the NTLM realm. You can have <code>ICA-NMC</code> on <code>NMC\scan-user</code> and <code>ICA-IESS</code> on <code>IESS\scan-user</code> side by side in the same CertGuard install.</div>
+      </details>
+      <details>
+        <summary>Can I use it without ever talking to a CA?</summary>
+        <div class="answer">Yes — the local-crypto operations (keygen, CSR build, format convert, inspect) work fully offline. The CA inventory is optional. CertGuard is a useful local cert toolkit even if you never configure an issuing CA.</div>
+      </details>
+      <details>
+        <summary>What formats does the converter support?</summary>
+        <div class="answer">Input is auto-detected from: PEM (.pem / .crt / .cer), DER, PKCS#7 (.p7b / .p7c, PEM or DER), PKCS#12 (.pfx / .p12). Output is operator-selected from the same set. Keys can be included or stripped per-conversion. Chain certs can be attached on output.</div>
+      </details>
+      <details>
+        <summary>Will CertGuard ever be signed?</summary>
+        <div class="answer">v1.0 ships EV-Authenticode signed alongside NetGuard. Until then, v0.x binaries are unsigned — SmartScreen "Run anyway" workflow on Windows, Gatekeeper "Open Anyway" on macOS. Same trust roadmap as NetGuard.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ────────────────────────────────────────────────────────── -->
+<footer class="site">
+  <div class="wrap">
+    <div class="grid">
+      <div class="col">
+        <a href="/" class="brand" style="margin-bottom:1rem;">
+          <span class="brand-mark">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+              <defs><linearGradient id="ng-cgfoot-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3d6cff"/><stop offset="100%" stop-color="#1737a8"/></linearGradient></defs>
+              <circle cx="32" cy="32" r="30" fill="url(#ng-cgfoot-grad)"/>
+              <path d="M 32 14 L 48 22 V 34 Q 48 46 32 52 Q 16 46 16 34 V 22 Z" fill="#fff" opacity="0.92"/>
+              <path d="M 26 32 l 5 5 l 10 -12" fill="none" stroke="#1737a8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="brand-word">
+            <span class="info">Info</span><span class="relay">Relay</span><span class="dot">·</span>NetGuard
+          </span>
+        </a>
+        <p style="font-size:0.88rem;">Offline-first network engineering tools. CertGuard is the cert-ops side of the suite.</p>
+      </div>
+      <div class="col">
+        <h4>CertGuard</h4>
+        <a href="#features">Features</a>
+        <a href="#download">Download</a>
+        <a href="/docs/user-guide.html">Docs (shared)</a>
+      </div>
+      <div class="col">
+        <h4>Family</h4>
+        <a href="/">NetGuard Audit</a>
+        <a href="/certguard/">NetGuard CertGuard</a>
+        <a href="/#features">Roadmap</a>
+      </div>
+      <div class="col">
+        <h4>Contact</h4>
+        <a href="mailto:hello@netguardir.com">hello@netguardir.com</a>
+        <a href="#">Security disclosure</a>
+        <a href="#">License inquiries</a>
+      </div>
+    </div>
+    <div class="bottom">
+      <div>© 2026 Outlaw Holdings LLC · InfoRelay NetGuard CertGuard™</div>
+      <div>Local crypto · CA traffic touches only operator-specified hosts</div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
