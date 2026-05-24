@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>InfoRelay AssetGuard — Tenable.sc license-bloat auditor</title>
-<meta name="description" content="See which IPs are eating your Tenable.sc license slots. Find the DHCP churn, stale assets, and unintended CIDRs Tenable's UI hides. Single offline binary, no installer.">
+<title>InfoRelay AssetGuard — Tenable.sc operator's toolbox</title>
+<meta name="description" content="See, find, and fix what Tenable.sc's dashboard hides. License-bloat audit · scan-zone visibility · DHCP-churn detection · diagnostics. Single offline binary, no installer, no telemetry.">
 <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="/assets/styles.css">
@@ -74,13 +74,12 @@
 <!-- ── Hero ────────────────────────────────────────────────────────── -->
 <section class="hero-x ag">
   <div class="wrap">
-    <h1>Find the IPs <span class="grad">eating your Tenable.sc license.</span><span class="beta-pill">BETA · v0.1</span></h1>
+    <h1>Tenable.sc operator's toolbox.<br><span class="grad">See, find, fix what the UI hides.</span><span class="beta-pill">BETA · v0.1</span></h1>
     <p class="subhead">
-      Tenable counts every unique IP it has seen in the last 90 days. The UI
-      shows the total. It does not show you <em>which</em> IPs, <em>which</em>
-      repositories, or <em>why</em> the same hostname is eating 12 slots.
-      AssetGuard pulls that data via the REST API and gives you a one-page
-      answer.
+      License-bloat audit. Scan-zone visibility. DHCP-churn detection.
+      Diagnostics export. AssetGuard taps the Tenable.sc REST API and
+      surfaces what the built-in dashboard can't — every page is a
+      tool you'd otherwise rebuild yourself.
     </p>
     <div class="cta-row">
       <a href="#download" class="btn btn-primary">⬇ Download for Windows</a>
@@ -145,40 +144,76 @@
 <!-- ── Features ────────────────────────────────────────────────────── -->
 <section class="s alt" id="features">
   <div class="wrap">
-    <span class="kicker" style="color:var(--ag-accent-soft);">v0.1 surface</span>
-    <h2>Six pages. One job: tell you the truth.</h2>
+    <span class="kicker" style="color:var(--ag-accent-soft);">v0.1.2 surface</span>
+    <h2>Three categories. Nine tools. One job: tell you the truth SC hides.</h2>
 
-    <div class="platform-grid" style="margin-top:1.5rem;">
+    <h3 style="font-family:var(--font-display);font-size:1rem;margin:1.5rem 0 0.5rem;color:var(--ag-accent-soft);letter-spacing:0.06em;text-transform:uppercase;">License &amp; bloat</h3>
+    <div class="platform-grid">
+      <div class="platform-tile ag-pri">
+        <span class="icon">🪪</span>
+        <h3>License details</h3>
+        <p>SC version · licensed IP cap · actual usage · utilization % · module entitlements. Side-by-side gap analysis.</p>
+      </div>
       <div class="platform-tile ag-pri">
         <span class="icon">🏛</span>
-        <h3>Repos overview</h3>
-        <p>Every Tenable.sc repository, sorted by IP count. License-share bar shows which one is the biggest contributor at a glance.</p>
+        <h3>Repos</h3>
+        <p>Per-repo IP counts (BOTH what SC reports AND analysis-actual — they often disagree). License-share bar from the truthful one.</p>
       </div>
       <div class="platform-tile ag-pri">
         <span class="icon">🕒</span>
         <h3>Stale IPs</h3>
-        <p>Configurable threshold (default 60 days). Sorted oldest-first. Severe-pill on anything 90+ days stale — the prime purge candidates.</p>
+        <p>Configurable threshold. Sorted oldest-first. Severe-pill on anything 90+ days stale.</p>
       </div>
       <div class="platform-tile ag-pri">
         <span class="icon">🔁</span>
-        <h3>DHCP churn detector</h3>
-        <p>Same hostname on &gt;1 IP within the audit window. Each row tells you how many license slots one physical asset is eating.</p>
+        <h3>DHCP churn</h3>
+        <p>Hostnames on &gt;1 IP within the audit window. Tells you how many slots one physical asset is eating.</p>
       </div>
       <div class="platform-tile ag-pri">
         <span class="icon">🌐</span>
         <h3>CIDR breakdown</h3>
-        <p>Group every IP by /24, /16, or any mask you choose. Find the subnet you didn't mean to scan in 10 seconds.</p>
+        <p>Group every IP by /24, /16, or any mask. Find the subnet you didn't mean to scan.</p>
+      </div>
+    </div>
+
+    <h3 style="font-family:var(--font-display);font-size:1rem;margin:1.75rem 0 0.5rem;color:var(--ag-accent-soft);letter-spacing:0.06em;text-transform:uppercase;">Scan operations</h3>
+    <div class="platform-grid">
+      <div class="platform-tile ag-pri">
+        <span class="icon">🛰</span>
+        <h3>Scan zones</h3>
+        <p>Each zone's assigned scanners + CIDR ranges. THE answer to "where is this range coming from".</p>
+      </div>
+      <div class="platform-tile coming">
+        <span class="tag-soon">v0.3</span>
+        <span class="icon">⏳</span>
+        <h3>Active scans</h3>
+        <p>What's running, what's recently failed, what's pulling in more hosts than expected.</p>
+      </div>
+      <div class="platform-tile coming">
+        <span class="tag-soon">v0.3</span>
+        <span class="icon">🔑</span>
+        <h3>Credentials</h3>
+        <p>Defined cred sets (never the secrets — those aren't exposed by the API) + which scans use them.</p>
+      </div>
+    </div>
+
+    <h3 style="font-family:var(--font-display);font-size:1rem;margin:1.75rem 0 0.5rem;color:var(--ag-accent-soft);letter-spacing:0.06em;text-transform:uppercase;">Diagnostics</h3>
+    <div class="platform-grid">
+      <div class="platform-tile ag-pri">
+        <span class="icon">🩺</span>
+        <h3>Diagnostics report</h3>
+        <p>One-page snapshot: build · platform · SC probe · recent activity. Downloadable as .txt for emailing bug reports.</p>
       </div>
       <div class="platform-tile ag-pri">
         <span class="icon">📜</span>
         <h3>Audit log</h3>
-        <p>Append-only log of every API call AssetGuard made. Read-only trail for your security or compliance team.</p>
+        <p>Append-only log of every API call AssetGuard made. Downloadable as .jsonl. Clearable from the UI.</p>
       </div>
       <div class="platform-tile coming">
         <span class="tag-soon">v0.2</span>
         <span class="icon">🧹</span>
         <h3>Purge planner</h3>
-        <p>Dry-run-by-default, confirm-before-execute. Bulk-remove stale IPs from a chosen repository. The operator always clicks final-confirm.</p>
+        <p>Dry-run-by-default, confirm-before-execute. Bulk-remove stale IPs. Operator always clicks final-confirm.</p>
       </div>
     </div>
   </div>
