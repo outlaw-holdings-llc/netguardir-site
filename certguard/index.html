@@ -89,7 +89,7 @@
       working and openssl alone doesn't know how to talk to AD CS.
     </p>
     <div class="cta-row">
-      <a href="#download" class="btn btn-primary">⬇ Download CertGuard</a>
+      <a href="#download" class="btn btn-primary">Request access</a>
       <a href="/certguard/vs-cyberark/" class="btn btn-ghost">vs CyberArk Cert Manager</a>
     </div>
     <div class="badges">
@@ -461,58 +461,31 @@
   </div>
 </section>
 
-<!-- ── CTA strip ───────────────────────────────────────────────────── -->
-<section class="cta-strip" id="download">
-  <div class="wrap">
-    <h2>Ready to cut your first cert?</h2>
-    <p>Drop the binary on disk. UAC self-elevates. Add a CA, discover templates, submit a CSR. First issued cert in five minutes flat.</p>
-    <div class="cta-row">
-      <a href="https://downloads.netguardir.com/certguard/certguard-0.1-windows-x64.zip" class="btn btn-primary">⬇ Download for Windows</a>
-      <a href="/certguard/vs-cyberark/" class="btn btn-ghost">vs CyberArk</a>
-    </div>
-  </div>
-</section>
-
-<!-- ── Full download grid ──────────────────────────────────────────── -->
-<section class="s">
+<!-- ── Request access (gated) ─────────────────────────────────────── -->
+<section class="s" id="download">
   <div class="wrap">
     <span class="kicker" style="color:#34d399;">Get CertGuard</span>
-    <h2>v0.1 builds · single binary</h2>
-    <p class="lede">Self-contained ~19 MB. UAC manifest embedded so double-click auto-elevates on STIG'd boxes.</p>
+    <h2>Request access</h2>
+    <p class="lede">CertGuard is licensed software for PKI teams. Builds are not posted publicly — every deployment is delivered with an activation key tied to your purchase.</p>
 
     <div class="download-card" style="border-color:rgba(22,163,74,0.3);background:linear-gradient(160deg, rgba(22,163,74,0.08) 0%, rgba(20,83,45,0.04) 100%);">
-      <div class="download-grid">
-        <a href="https://downloads.netguardir.com/certguard/certguard-0.1-windows-x64.zip" class="download-tile">
-          <div class="os">🪟 Windows</div>
-          <div class="desc">10/11 x64 · UAC self-elevate · WebView2</div>
-          <div class="filename">certguard-0.1-windows-x64.zip</div>
-        </a>
-        <a href="https://downloads.netguardir.com/certguard/certguard-0.1-macos-arm64.zip" class="download-tile">
-          <div class="os">🍎 macOS</div>
-          <div class="desc">Apple Silicon · 13+</div>
-          <div class="filename">certguard-0.1-macos-arm64.zip</div>
-        </a>
-        <a href="https://downloads.netguardir.com/certguard/certguard-0.1-linux-x86_64.zip" class="download-tile">
-          <div class="os">🐧 Linux</div>
-          <div class="desc">x86_64 · GTK + WebKit2</div>
-          <div class="filename">certguard-0.1-linux-x86_64.zip</div>
-        </a>
-      </div>
-      <div class="install-walkthrough" style="background:rgba(22,163,74,0.06);border-color:rgba(22,163,74,0.25);">
-        <h3 style="color:#86efac;">Installing on Windows</h3>
-        <ol>
-          <li>Download <code>certguard-0.1-windows-x64.zip</code>.</li>
-          <li>Right-click the zip → <strong>Extract All…</strong></li>
-          <li>Right-click <code>certguard-0.1-windows-x64.exe</code> → <strong>Properties</strong> → tick <strong>Unblock</strong> → <strong>OK</strong>.</li>
-          <li>Double-click the .exe. UAC will prompt automatically (embedded manifest) — click <strong>Yes</strong>.</li>
-          <li>SmartScreen may warn (unsigned in v0.1). Click <strong>More info → Run anyway</strong> — one-time per binary hash.</li>
-          <li>CertGuard opens in its own desktop window on <code>127.0.0.1:9988</code>.</li>
+      <div style="padding:24px 28px;">
+        <h3 style="margin-top:0;color:#86efac;">How to get the binary</h3>
+        <ol style="line-height:1.7;">
+          <li><strong>Email <a href="mailto:licensing@netguardir.com?subject=CertGuard%20access%20request&amp;body=Org%3A%20%0AContact%3A%20%0APlatform%20(Win%2FMac%2FLinux)%3A%20%0AIntended%20tier%20(Solo%2FTeam%2FSite)%3A%20%0AEval%20vs%20purchase%3A%20" style="color:#86efac;">licensing@netguardir.com</a></strong> with your organization, contact name, platform (Windows / macOS / Linux), and the tier you're targeting (Solo / Team / Site).</li>
+          <li><strong>Receive the signed binary + activation key.</strong> Builds are shipped as a single self-contained <code>~19 MB</code> file — no installer, no service, no admin install required for use, no telemetry. UAC self-elevates on Windows; macOS + Linux just double-click.</li>
+          <li><strong>Activate.</strong> Launch CertGuard → <em>Admin → Licensing</em> → paste your activation key. Online activation needs one outbound HTTPS reach to <code>licensing.netguardir.com</code>; the license caches locally and works fully offline thereafter. SCIF / air-gapped installs can use the offline file-drop path instead.</li>
+          <li><strong>30-day trial included.</strong> From the moment you launch the binary, all features are unlocked for 30 days. Activate at any point during or after — your trial state and activation are independent.</li>
         </ol>
       </div>
-      <div class="download-meta">
-        Already have Python? <code>pip install inforelay-certguard</code>, then <code>certguard</code> for the native window.
+      <div class="download-meta" style="border-top:1px solid rgba(255,255,255,0.06);padding:18px 28px;">
+        Already a customer? Use the same email if you've lost your activation key or need a new platform build. Replies typically same business day.
       </div>
     </div>
+
+    <p style="margin-top:24px;text-align:center;color:#9ca3af;font-size:14px;">
+      Pricing: <a href="/#licensing" style="color:#86efac;">Solo $1,995 · Team $5,995 · Site $14,995</a> annual per issuing CA.
+    </p>
   </div>
 </section>
 
