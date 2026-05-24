@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CertGuard vs. CyberArk Certificate Manager — InfoRelay</title>
+<meta name="description" content="Honest comparison: InfoRelay CertGuard vs. CyberArk Certificate Manager (formerly Venafi). For air-gapped DoW environments, small-to-mid AD CS deployments, and shops that want feature parity at 10% of the TCO.">
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/assets/styles.css">
+<style>
+  :root { --accent: #16a34a; --accent-deep: #166534; }
+  .vs-hero { padding: 3rem 0 1.5rem; text-align: center; }
+  .vs-hero h1 { font-family: var(--font-display); font-size: 2.6rem; letter-spacing: -0.025em; margin: 0 0 0.5rem; }
+  .vs-hero .vs { color: var(--muted); font-weight: 500; }
+  .vs-hero .cg-name { background: linear-gradient(110deg, #fff 0%, #34d399 60%, #16a34a 90%); background-clip: text; -webkit-background-clip: text; color: transparent; }
+  .vs-hero .ck-name { color: #c2c8d8; }
+  .pillar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.85rem; margin: 1.5rem 0; }
+  .pillar { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 1.1rem 1.3rem; }
+  .pillar .num { font-family: var(--font-display); font-size: 1.6rem; color: var(--accent); font-weight: 700; }
+  .pillar h3 { font-family: var(--font-display); font-size: 1.05rem; margin: 0.2rem 0 0.5rem; }
+  .pillar p { font-size: 0.92rem; color: var(--fg-soft); margin: 0; line-height: 1.55; }
+  .cmp { width: 100%; border-collapse: collapse; font-size: 0.92rem; margin: 0.75rem 0; }
+  .cmp th, .cmp td { padding: 0.7rem 0.8rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+  .cmp th { color: var(--muted); font-family: var(--font-display); font-size: 0.86rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+  .cmp tr.win-cg td:nth-child(2) { color: #86efac; font-weight: 600; }
+  .cmp tr.win-cyb td:nth-child(3) { color: #fcd34d; font-weight: 600; }
+  .cmp td.cg-col { background: rgba(22, 163, 74, 0.06); }
+  .yes { color: #86efac; font-weight: 700; }
+  .no  { color: #fca5a5; font-weight: 700; }
+  .partial { color: #fcd34d; font-weight: 700; }
+  .tco-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 1.25rem 0; }
+  .tco-card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 1.2rem 1.4rem; }
+  .tco-card.cg { border-color: rgba(22, 163, 74, 0.4); }
+  .tco-card h3 { margin: 0 0 0.6rem; font-family: var(--font-display); }
+  .tco-line { display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid var(--line-soft); font-size: 0.92rem; }
+  .tco-line:last-of-type { border-bottom: none; }
+  .tco-line .lbl { color: var(--fg-soft); }
+  .tco-line .val { font-family: var(--font-mono); }
+  .tco-card .total { margin-top: 0.7rem; padding-top: 0.7rem; border-top: 2px solid var(--line); font-weight: 700; }
+  .tco-card.cg .total .val { color: #86efac; font-size: 1.15rem; }
+  .tco-card .total .val { color: #fcd34d; font-size: 1.15rem; }
+  .honest { background: rgba(245, 158, 11, 0.07); border-left: 4px solid #f59e0b; padding: 1rem 1.25rem; border-radius: 6px; margin: 1.25rem 0; }
+  .honest h3 { margin: 0 0 0.5rem; color: #fcd34d; }
+  @media (max-width: 700px) { .tco-grid { grid-template-columns: 1fr; } .vs-hero h1 { font-size: 1.9rem; } }
+</style>
+</head>
+<body>
+
+<!-- Utility top bar (sitewide) -->
+<div class="utilbar">
+  <div class="wrap">
+    <div class="util-left">
+      <a href="/">InfoRelay</a><span class="sep">/</span>
+      <a href="/certguard/">CertGuard</a><span class="sep">·</span>
+      <a href="/certguard/vs-cyberark/" style="color:var(--fg);">vs CyberArk</a>
+    </div>
+    <div class="util-right">
+      <a href="/docs/user-guide.html">Docs</a>
+      <span class="sep">·</span>
+      <a href="/certguard/#download">Downloads</a>
+      <span class="sep">·</span>
+      <a href="mailto:hello@netguardir.com">Contact</a>
+    </div>
+  </div>
+</div>
+
+<header class="site">
+  <div class="wrap">
+    <a href="/" class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <defs><linearGradient id="ng-vs-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3d6cff"/><stop offset="100%" stop-color="#1737a8"/></linearGradient></defs>
+          <circle cx="32" cy="32" r="30" fill="url(#ng-vs-grad)"/>
+          <path d="M 32 14 L 48 22 V 34 Q 48 46 32 52 Q 16 46 16 34 V 22 Z" fill="#fff" opacity="0.92"/>
+          <path d="M 26 32 l 5 5 l 10 -12" fill="none" stroke="#1737a8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span class="brand-word"><span class="info">Info</span><span class="relay">Relay</span><span class="dot">·</span>NetGuard</span>
+    </a>
+    <nav class="primary">
+      <a href="/">Audit</a>
+      <a href="/certguard/" style="color:#34d399;">CertGuard</a>
+      <a href="/certguard/#download">Download</a>
+      <a href="/docs/user-guide.html">Docs</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section class="vs-hero">
+  <h1>
+    <span class="cg-name">CertGuard</span>
+    <span class="vs">vs.</span>
+    <span class="ck-name">CyberArk Certificate Manager</span>
+  </h1>
+  <p class="lede" style="max-width:720px;margin:0.5rem auto 0;">
+    The honest comparison. CyberArk's Certificate Manager (formerly Venafi
+    TPP) is the enterprise gold standard for orgs with 10,000+ certs across
+    multi-cloud + Kubernetes. <strong>For air-gapped DoW environments,
+    small-to-mid AD CS deployments, and shops that need certificate
+    management WITHOUT a $200K infrastructure build-out — CertGuard wins.</strong>
+  </p>
+</section>
+
+<!-- ── The 4-pillar pitch ────────────────────────────────────────────── -->
+<section class="s">
+  <h2 class="kicker">Four reasons CertGuard wins where CyberArk over-serves</h2>
+
+  <div class="pillar-grid">
+    <div class="pillar">
+      <div class="num">1.</div>
+      <h3>Total air-gap</h3>
+      <p>No telemetry. No license-server callback. No update channel.
+      The .exe runs identically on day 1 and year 5. SHA-256 is the
+      entire change-control artifact. CyberArk's TPP needs network
+      connectivity for licensing + agents phone home. In a SCIF or
+      behind an air-gap firewall, that's a non-starter.</p>
+    </div>
+    <div class="pillar">
+      <div class="num">2.</div>
+      <h3>Zero deployment footprint</h3>
+      <p>No MSI. No service. No agent on production servers. No SQL
+      backend. No load balancer. CyberArk needs a TPP host + SQL Server
+      + agents on every cert-bearing target + ports opened end-to-end.
+      That's a SWAB nightmare. CertGuard is one SWAB approval, ever.</p>
+    </div>
+    <div class="pillar">
+      <div class="num">3.</div>
+      <h3>Extremely portable</h3>
+      <p>USB-stick deployable. Drop it on an air-gapped console. Run
+      from a PAW. Carry it onto a vessel or SCIF visit. Move it between
+      forests by copying one file. Portable mode keeps the config next
+      to the binary — the entire install fits on a 64 MB USB drive.</p>
+    </div>
+    <div class="pillar">
+      <div class="num">4.</div>
+      <h3>Feature parity for the 80% case</h3>
+      <p>Cert inventory, chain visualization, expiration monitoring,
+      AD CS template management, multi-domain support, LDIF-driven
+      template edits, EPA / CBT-aware NTLM, ICA discovery. The 20%
+      CertGuard skips (K8s/SPIFFE, ServiceNow, multi-cloud) only
+      matters at 10,000+ cert scale anyway.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── TCO math ──────────────────────────────────────────────────────── -->
+<section class="s">
+  <h2 class="kicker">3-year TCO — the slide for your CFO</h2>
+  <div class="tco-grid">
+    <div class="tco-card">
+      <h3 style="color:#fcd34d;">CyberArk Certificate Manager</h3>
+      <div class="tco-line"><span class="lbl">Software license (entry → mid-shop)</span><span class="val">$150K – $600K</span></div>
+      <div class="tco-line"><span class="lbl">TPP infra (Win Server + SQL Server, 3y)</span><span class="val">$45K</span></div>
+      <div class="tco-line"><span class="lbl">Agent rollout to ~50 servers (PM time × SWAB)</span><span class="val">$40K</span></div>
+      <div class="tco-line"><span class="lbl">Annual maintenance (3y)</span><span class="val">$75K</span></div>
+      <div class="tco-line"><span class="lbl">Professional services / implementation</span><span class="val">$50K</span></div>
+      <div class="tco-line total"><span class="lbl">3-year TCO</span><span class="val">$360K – $810K</span></div>
+    </div>
+    <div class="tco-card cg">
+      <h3 style="color:#86efac;">InfoRelay CertGuard</h3>
+      <div class="tco-line"><span class="lbl">Software license (v0.1 free; v1.0 ~$5K/site/yr)</span><span class="val">$0 – $15K</span></div>
+      <div class="tco-line"><span class="lbl">Infrastructure</span><span class="val">$0 (single binary)</span></div>
+      <div class="tco-line"><span class="lbl">Agent rollout</span><span class="val">$0 (no agents)</span></div>
+      <div class="tco-line"><span class="lbl">Annual maintenance</span><span class="val">included</span></div>
+      <div class="tco-line"><span class="lbl">Professional services</span><span class="val">$0 (single .exe, runs)</span></div>
+      <div class="tco-line total"><span class="lbl">3-year TCO</span><span class="val">$0 – $15K</span></div>
+    </div>
+  </div>
+  <p class="lede" style="text-align:center;">
+    <strong style="color:#86efac;">CertGuard's 3-year TCO is 20-50× lower</strong>
+    for the same 80% of certificate operations needs.
+  </p>
+</section>
+
+<!-- ── Feature-by-feature ───────────────────────────────────────────── -->
+<section class="s">
+  <h2 class="kicker">Feature-by-feature, honestly</h2>
+  <table class="cmp">
+    <thead>
+      <tr><th>Capability</th><th>CertGuard v0.1</th><th>CyberArk CM</th></tr>
+    </thead>
+    <tbody>
+      <tr class="win-cg"><td>Single-binary, no installer, no admin rights to run</td><td class="cg-col">✓ yes</td><td>✗ requires server + agents</td></tr>
+      <tr class="win-cg"><td>Air-gap / no telemetry / no license callback</td><td class="cg-col">✓ yes</td><td>✗ phones home</td></tr>
+      <tr class="win-cg"><td>STIG-friendly install (no DA logon-locally, no MSI, no service)</td><td class="cg-col">✓ yes</td><td>✗ requires agents on every target</td></tr>
+      <tr class="win-cg"><td>USB-portable deployment</td><td class="cg-col">✓ yes</td><td>✗ no</td></tr>
+      <tr><td>Local keygen + CSR (RSA / ECDSA, full DN + SANs + EKUs)</td><td class="cg-col">✓ yes</td><td>✓ yes (server-side)</td></tr>
+      <tr><td>Cert format conversion (PEM / DER / PKCS#7 / PKCS#12)</td><td class="cg-col">✓ yes</td><td>✓ yes</td></tr>
+      <tr><td>AD CS template discovery (LDAPS)</td><td class="cg-col">✓ yes</td><td>✓ yes</td></tr>
+      <tr><td>AD CS template modification (LDIF changetype:modify)</td><td class="cg-col">✓ yes</td><td>✓ yes (via console)</td></tr>
+      <tr><td>EPA / CBT-aware NTLM (Channel Binding Token)</td><td class="cg-col">✓ yes (pyspnego)</td><td>✓ yes</td></tr>
+      <tr><td>Cert expiration monitor with 30/60/90-day buckets</td><td class="cg-col">✓ yes</td><td>✓ yes</td></tr>
+      <tr><td>Visual chain map / cert architecture health view</td><td class="cg-col">✓ <strong>front-and-center</strong></td><td>🟡 has it, buried in menus</td></tr>
+      <tr><td>Multi-domain / multi-forest support</td><td class="cg-col">✓ yes</td><td>✓ yes</td></tr>
+      <tr class="win-cyb"><td>AD CS HTTP enrollment (POST CSR + fetch cert + push)</td><td class="cg-col">⏳ v0.2 (next release)</td><td>✓ yes</td></tr>
+      <tr class="win-cyb"><td>Multi-CA orchestration (DigiCert, Sectigo, Let's Encrypt, …)</td><td class="cg-col">⏳ AD CS-only today</td><td>✓ 100+ CAs</td></tr>
+      <tr class="win-cyb"><td>Kubernetes cert-manager / SPIFFE-SPIRE workload identity</td><td class="cg-col">✗ no</td><td>✓ yes</td></tr>
+      <tr class="win-cyb"><td>ServiceNow / ITSM / PagerDuty integration</td><td class="cg-col">⏳ v0.4 roadmap</td><td>✓ yes</td></tr>
+      <tr class="win-cyb"><td>HSM / FIPS 140-2 Level 3 key escrow</td><td class="cg-col">✗ no</td><td>✓ yes</td></tr>
+      <tr class="win-cyb"><td>Multi-tenant / MSP deployment</td><td class="cg-col">✗ single install</td><td>✓ yes</td></tr>
+      <tr class="win-cyb"><td>10,000+ cert scale, multi-cloud (AWS/Azure/GCP)</td><td class="cg-col">⚠ designed for 50-2000</td><td>✓ enterprise scale</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ── When NOT to use us ───────────────────────────────────────────── -->
+<section class="s">
+  <div class="honest">
+    <h3>⚖ When CyberArk IS the right answer (be honest in procurement)</h3>
+    <p style="margin:0 0 0.5rem;color:var(--fg-soft);font-size:0.94rem;line-height:1.65;">
+      We don't want to win contracts we can't deliver on. CyberArk
+      genuinely wins when your org has:
+    </p>
+    <ul style="margin:0.3rem 0;padding-left:1.3rem;color:var(--fg-soft);font-size:0.92rem;line-height:1.8;">
+      <li>10,000+ certificates across multi-cloud (AWS + Azure + GCP + on-prem)</li>
+      <li>Kubernetes + cert-manager + SPIFFE/SPIRE as a hard requirement</li>
+      <li>ServiceNow / ITSM workflow integration as a procurement gate</li>
+      <li>HSM-backed / FIPS Level 3 key escrow for code-signing</li>
+      <li>24/7 vendor support contract for tier-1 incident response</li>
+      <li>Multi-tenant / MSP deployment with per-customer isolation</li>
+    </ul>
+    <p style="margin:0.6rem 0 0;color:var(--fg-soft);font-size:0.94rem;">
+      <strong>For everything else, CertGuard wins on cost, footprint, and operational simplicity.</strong>
+    </p>
+  </div>
+</section>
+
+<!-- ── CTA ──────────────────────────────────────────────────────────── -->
+<section class="s" style="text-align:center;">
+  <h2 class="kicker">Want to slow-walk the CyberArk RFP?</h2>
+  <p class="lede" style="max-width:680px;margin:0 auto 1.5rem;">
+    Spin up CertGuard in your environment in &lt;5 minutes. No install,
+    no agents, no infrastructure. Show your procurement chain a working
+    alternative <em>before</em> the PO is cut.
+  </p>
+  <div class="cta-row" style="justify-content:center;">
+    <a href="/certguard/#download" class="btn btn-primary cg" style="background:linear-gradient(135deg,#16a34a,#166534);">⬇ Download CertGuard</a>
+    <a href="/certguard/" class="btn btn-ghost">See full feature list</a>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-x">
+  <div class="wrap">
+    <div class="colgrid">
+      <div class="col-brand">
+        <a href="/" class="brand">
+          <span class="brand-mark">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+              <defs><linearGradient id="vs-foot" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3d6cff"/><stop offset="100%" stop-color="#1737a8"/></linearGradient></defs>
+              <circle cx="32" cy="32" r="30" fill="url(#vs-foot)"/>
+              <path d="M 32 14 L 48 22 V 34 Q 48 46 32 52 Q 16 46 16 34 V 22 Z" fill="#fff" opacity="0.92"/>
+              <path d="M 26 32 l 5 5 l 10 -12" fill="none" stroke="#1737a8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="brand-word"><span class="info">Info</span><span class="relay">Relay</span><span class="dot">·</span>CertGuard</span>
+        </a>
+        <p>Offline AD CS lifecycle from a single binary.</p>
+        <p style="color:#34d399; font-size:0.85rem; margin-top:0.5rem;">© 2026 Outlaw Holdings LLC</p>
+      </div>
+      <div>
+        <h5>Products</h5>
+        <a href="/">NetGuard Audit</a>
+        <a href="/certguard/">CertGuard</a>
+      </div>
+      <div>
+        <h5>Resources</h5>
+        <a href="/certguard/vs-cyberark/">vs CyberArk</a>
+        <a href="/certguard/one-pager/">One-pager</a>
+        <a href="/docs/user-guide.html">User guide</a>
+      </div>
+      <div>
+        <h5>Company</h5>
+        <a href="mailto:hello@netguardir.com">Contact</a>
+        <a href="mailto:licensing@netguardir.com">Licensing</a>
+      </div>
+      <div>
+        <h5>Posture</h5>
+        <a>100% offline</a>
+        <a>No telemetry</a>
+        <a>SCIF-deployable</a>
+      </div>
+      <div>
+        <h5>Standards</h5>
+        <a>DISA STIG</a>
+        <a>NIST 800-171</a>
+        <a>CMMC 2.0</a>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div>InfoRelay CertGuard™ · NetGuard™ are trademarks of Outlaw Holdings LLC.</div>
+      <div class="social"><a href="mailto:hello@netguardir.com" title="Email">✉</a></div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>InfoRelay CertGuard — Procurement One-Pager</title>
+<meta name="description" content="Single-page printable comparison of InfoRelay CertGuard vs CyberArk Certificate Manager for procurement and CFO review.">
+<style>
+/* Print-optimized — opens cleanly in a browser, prints to a single
+   US Letter / A4 page. File → Print → Save as PDF. */
+@page {
+  size: letter portrait;
+  margin: 0.5in;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 1rem 1.5rem;
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  color: #1a202c; background: #fff;
+  font-size: 9.5pt; line-height: 1.42;
+  max-width: 8.5in; margin: 0 auto;
+}
+h1, h2, h3 { margin: 0; }
+h1 {
+  font-size: 17pt; font-weight: 700; letter-spacing: -0.01em;
+  color: #166534; margin-bottom: 0.1rem;
+}
+h1 .vs { color: #94a3b8; font-weight: 400; }
+.subhead { color: #475569; font-size: 9pt; margin-bottom: 0.5rem; }
+
+.hero {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  border-bottom: 2px solid #16a34a; padding-bottom: 0.4rem; margin-bottom: 0.6rem;
+}
+.hero .right { text-align: right; color: #64748b; font-size: 8pt; line-height: 1.3; }
+.hero .right strong { color: #166534; }
+
+h2 {
+  font-size: 11pt; color: #166534; margin: 0.7rem 0 0.25rem;
+  border-bottom: 1px solid #d1d5db; padding-bottom: 0.15rem;
+  text-transform: uppercase; letter-spacing: 0.03em;
+}
+
+/* 4-pillar grid */
+.pillars {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem;
+  margin: 0.3rem 0;
+}
+.pillar {
+  border: 1px solid #16a34a; background: #f0fdf4; border-radius: 4px;
+  padding: 0.4rem 0.5rem;
+}
+.pillar .num {
+  color: #166534; font-size: 9pt; font-weight: 700; margin-bottom: 0.1rem;
+}
+.pillar .ttl { font-weight: 700; font-size: 9.5pt; margin-bottom: 0.15rem; color: #14532d; }
+.pillar .body { font-size: 8.2pt; color: #334155; line-height: 1.4; }
+
+/* TCO table */
+.tco {
+  display: grid; grid-template-columns: 2fr 1fr 1fr;
+  gap: 0; margin: 0.35rem 0;
+  border: 1px solid #cbd5e1; border-radius: 4px; overflow: hidden;
+}
+.tco > div { padding: 0.3rem 0.5rem; border-bottom: 1px solid #e2e8f0; }
+.tco .hdr { background: #f1f5f9; font-weight: 700; color: #475569; font-size: 8.5pt; text-transform: uppercase; letter-spacing: 0.04em; }
+.tco .lbl { color: #475569; }
+.tco .ck { background: #fffbeb; color: #92400e; text-align: right; font-family: 'JetBrains Mono', ui-monospace, monospace; }
+.tco .cg { background: #f0fdf4; color: #14532d; text-align: right; font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 600; }
+.tco .total .lbl { font-weight: 700; color: #1a202c; }
+.tco .total .ck { font-weight: 700; color: #92400e; }
+.tco .total .cg { font-weight: 700; color: #166534; font-size: 10pt; }
+
+/* Feature matrix */
+.cmp {
+  width: 100%; border-collapse: collapse; font-size: 8.5pt; margin: 0.3rem 0;
+}
+.cmp th, .cmp td {
+  text-align: left; padding: 0.2rem 0.45rem;
+  border-bottom: 1px solid #e2e8f0; vertical-align: top;
+}
+.cmp th {
+  background: #f1f5f9; color: #475569;
+  font-size: 7.5pt; text-transform: uppercase; letter-spacing: 0.04em;
+}
+.cmp td:nth-child(2), .cmp td:nth-child(3) { width: 18%; text-align: center; }
+.cmp .y { color: #166534; font-weight: 700; }
+.cmp .n { color: #b91c1c; font-weight: 700; }
+.cmp .p { color: #b45309; font-weight: 700; }
+.cmp .cg-col { background: #f0fdf4; }
+
+/* Honest disclaimer + footer */
+.honest {
+  border-left: 3px solid #f59e0b; background: #fffbeb;
+  padding: 0.4rem 0.6rem; border-radius: 3px;
+  font-size: 8.5pt; color: #78350f; line-height: 1.5;
+  margin: 0.4rem 0;
+}
+.honest .ttl { font-weight: 700; color: #92400e; margin-bottom: 0.15rem; }
+
+footer {
+  margin-top: 0.6rem; padding-top: 0.35rem; border-top: 1px solid #cbd5e1;
+  font-size: 7.5pt; color: #64748b; display: flex; justify-content: space-between;
+}
+
+/* Print button — hidden on print */
+.print-btn {
+  position: fixed; top: 1rem; right: 1rem; z-index: 100;
+  background: #16a34a; color: white; border: none;
+  padding: 0.7rem 1.2rem; border-radius: 6px;
+  font-family: inherit; font-weight: 600; font-size: 11pt;
+  cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.print-btn:hover { background: #166534; }
+@media print { .print-btn { display: none !important; } }
+</style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">🖨 Save as PDF</button>
+
+<div class="hero">
+  <div>
+    <h1>InfoRelay CertGuard <span class="vs">vs.</span> CyberArk Certificate Manager</h1>
+    <div class="subhead">Procurement-ready comparison · honest where each tool wins</div>
+  </div>
+  <div class="right">
+    <strong>30-50× lower 3-year TCO</strong><br>
+    for the 80% of cert-ops needs<br>
+    in air-gapped AD CS environments
+  </div>
+</div>
+
+<h2>The 4-pillar pitch</h2>
+<div class="pillars">
+  <div class="pillar">
+    <div class="num">1</div>
+    <div class="ttl">Total air-gap</div>
+    <div class="body">No telemetry. No license callback. SHA-256 is the whole change-control artifact. CyberArk's TPP phones home; CertGuard doesn't.</div>
+  </div>
+  <div class="pillar">
+    <div class="num">2</div>
+    <div class="ttl">Zero footprint</div>
+    <div class="body">No MSI. No agents on production. No SQL backend. One SWAB approval, ever. CyberArk needs servers + DB + agents on every target.</div>
+  </div>
+  <div class="pillar">
+    <div class="num">3</div>
+    <div class="ttl">Extremely portable</div>
+    <div class="body">USB-stick deployable. Runs from a PAW. Carry it onto a SCIF visit. 64 MB drive holds the entire install + data.</div>
+  </div>
+  <div class="pillar">
+    <div class="num">4</div>
+    <div class="ttl">80% feature parity</div>
+    <div class="body">Inventory, chain map, expiration monitor, AD CS template mgmt, multi-domain, EPA/CBT NTLM, LDIF edits. The 20% skipped is enterprise-scale only.</div>
+  </div>
+</div>
+
+<h2>3-year TCO comparison</h2>
+<div class="tco">
+  <div class="hdr">Line item</div>
+  <div class="hdr ck">CyberArk CM</div>
+  <div class="hdr cg">CertGuard</div>
+
+  <div class="lbl">Software license (entry → mid-shop)</div>
+  <div class="ck">$150K – $600K</div>
+  <div class="cg">$0 – $15K</div>
+
+  <div class="lbl">Infrastructure (Win Server + SQL, 3y)</div>
+  <div class="ck">$45K</div>
+  <div class="cg">$0</div>
+
+  <div class="lbl">Agent rollout to ~50 servers (PM time)</div>
+  <div class="ck">$40K</div>
+  <div class="cg">$0</div>
+
+  <div class="lbl">Annual maintenance (3y)</div>
+  <div class="ck">$75K</div>
+  <div class="cg">included</div>
+
+  <div class="lbl">Professional services / implementation</div>
+  <div class="ck">$50K</div>
+  <div class="cg">$0</div>
+
+  <div class="lbl total"><strong>3-year TCO</strong></div>
+  <div class="ck total">$360K – $810K</div>
+  <div class="cg total">$0 – $15K</div>
+</div>
+
+<h2>Feature comparison — where each tool wins</h2>
+<table class="cmp">
+  <tr>
+    <th>Capability</th><th>CertGuard</th><th>CyberArk CM</th>
+  </tr>
+  <tr><td>Single binary, no installer, no admin rights to run</td>            <td class="cg-col y">YES</td><td class="n">NO</td></tr>
+  <tr><td>Air-gap / no telemetry / no license callback</td>                   <td class="cg-col y">YES</td><td class="n">NO</td></tr>
+  <tr><td>STIG-friendly install (no DA logon-locally, no MSI, no service)</td><td class="cg-col y">YES</td><td class="n">NO</td></tr>
+  <tr><td>USB-portable deployment</td>                                        <td class="cg-col y">YES</td><td class="n">NO</td></tr>
+  <tr><td>Local keygen + CSR (RSA/ECDSA, full DN + SANs + EKUs)</td>           <td class="cg-col y">YES</td><td class="y">YES</td></tr>
+  <tr><td>Cert format conversion (PEM / DER / PKCS#7 / PKCS#12)</td>           <td class="cg-col y">YES</td><td class="y">YES</td></tr>
+  <tr><td>AD CS template discovery via LDAPS</td>                              <td class="cg-col y">YES</td><td class="y">YES</td></tr>
+  <tr><td>AD CS template modification (LDIF changetype:modify)</td>            <td class="cg-col y">YES</td><td class="y">YES</td></tr>
+  <tr><td>EPA / Channel Binding Token aware NTLM</td>                          <td class="cg-col y">YES</td><td class="y">YES</td></tr>
+  <tr><td>Cert expiration monitor with 30/60/90-day buckets</td>               <td class="cg-col y">YES</td><td class="y">YES</td></tr>
+  <tr><td>Visual chain map / cert architecture health</td>                     <td class="cg-col y">YES (front-and-center)</td><td class="p">PARTIAL (buried)</td></tr>
+  <tr><td>Multi-domain / multi-forest support</td>                             <td class="cg-col y">YES</td><td class="y">YES</td></tr>
+  <tr><td>AD CS HTTP enrollment (POST CSR + fetch cert + push)</td>            <td class="cg-col p">v0.2 (next)</td><td class="y">YES</td></tr>
+  <tr><td>Multi-CA orchestration (DigiCert / Sectigo / LE / 100+)</td>         <td class="cg-col p">AD CS-only today</td><td class="y">YES</td></tr>
+  <tr><td>Kubernetes cert-manager / SPIFFE workload identity</td>              <td class="cg-col n">NO</td><td class="y">YES</td></tr>
+  <tr><td>ServiceNow / ITSM / PagerDuty integration</td>                       <td class="cg-col p">v0.4 roadmap</td><td class="y">YES</td></tr>
+  <tr><td>HSM / FIPS 140-2 Level 3 key escrow</td>                             <td class="cg-col n">NO</td><td class="y">YES</td></tr>
+  <tr><td>Multi-tenant / MSP deployment</td>                                   <td class="cg-col n">NO</td><td class="y">YES</td></tr>
+  <tr><td>10,000+ cert scale, multi-cloud (AWS + Azure + GCP)</td>             <td class="cg-col n">Designed for 50-2K</td><td class="y">YES</td></tr>
+</table>
+
+<div class="honest">
+  <div class="ttl">When CyberArk IS the right answer (be honest in procurement)</div>
+  <strong>Choose CyberArk</strong> if your org has: 10,000+ certs across multi-cloud,
+  Kubernetes/SPIFFE as a hard requirement, ServiceNow integration as a procurement gate,
+  HSM-backed code-signing, 24/7 vendor support, or multi-tenant MSP deployment needs.
+  <strong>For everything else — small-to-mid AD CS shops, DoW / SCIF / air-gap environments,
+  STIG'd networks, teams without budget for $200K+ infrastructure — CertGuard wins on
+  TCO, footprint, and operational simplicity.</strong>
+</div>
+
+<footer>
+  <div>InfoRelay CertGuard v0.1 · <a href="https://netguardir.com/certguard/">netguardir.com/certguard</a></div>
+  <div>Single-binary download, no install · MIT-Approved roadmap</div>
+</footer>
+
+</body>
+</html>
