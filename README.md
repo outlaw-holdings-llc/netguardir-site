@@ -75,4 +75,4 @@ Until the binaries are built, the Windows/macOS/Linux tiles 404 — they show th
 | Body font | Inter Tight (Google) |
 | Mono | JetBrains Mono (Google) |
 
-Reuse the same brand variables in any future Outlaw Holdings tool sub-site to keep the NetGuard family visually consistent.
+Reuse the same brand variables in any future InfoRelay tool sub-site to keep the NetGuard family visually consistent.
