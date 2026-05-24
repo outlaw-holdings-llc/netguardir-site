@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>InfoRelay AssetGuard — Tenable.sc license-bloat auditor</title>
+<meta name="description" content="See which IPs are eating your Tenable.sc license slots. Find the DHCP churn, stale assets, and unintended CIDRs Tenable's UI hides. Single offline binary, no installer.">
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/assets/styles.css">
+<style>
+  /* AssetGuard purple-accent overrides — same brand spine as NetGuard,
+     purple to distinguish the SC/asset visibility tool visually. */
+  :root {
+    --ag-accent: #a855f7;
+    --ag-accent-soft: #c4b5fd;
+    --ag-accent-dark: #6b21a8;
+  }
+  .hero-x.ag h1 .grad { background: linear-gradient(110deg, #fff 30%, #c4b5fd 60%, #a855f7 90%); background-clip: text; -webkit-background-clip: text; color: transparent; }
+  .ag .btn-primary { background: linear-gradient(135deg, #a855f7 0%, #6b21a8 100%); box-shadow: 0 6px 20px rgba(168,85,247,0.3); }
+  .ag .btn-primary:hover { box-shadow: 0 10px 28px rgba(168,85,247,0.45); }
+  .platform-tile.ag-pri { border-color: rgba(168,85,247,0.45); }
+  .ag .stat-cell .num { background: linear-gradient(135deg, #fff 0%, #c4b5fd 100%); background-clip: text; -webkit-background-clip: text; color: transparent; }
+  .ag .uc-card .fix { background: rgba(168,85,247,0.10); border-left-color: #a855f7; }
+  .ag .uc-card .fix strong { color: #c4b5fd; }
+  .beta-pill { display: inline-block; background: rgba(168,85,247,0.16); color: #c4b5fd; border: 1px solid rgba(168,85,247,0.4); padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; margin-left: 0.6em; vertical-align: middle; }
+</style>
+</head>
+<body class="ag">
+
+<!-- ── Utility top bar ─────────────────────────────────────────────── -->
+<div class="utilbar">
+  <div class="wrap">
+    <div class="util-left">
+      <a href="/">InfoRelay</a><span class="sep">/</span>
+      <a href="/assetguard/">AssetGuard</a>
+    </div>
+    <div class="util-right">
+      <a href="#download">Downloads</a>
+      <span class="sep">·</span>
+      <a href="mailto:licensing@inforelay.ai">Contact</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── Main nav ────────────────────────────────────────────────────── -->
+<header class="site">
+  <div class="wrap">
+    <a href="/" class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <defs><linearGradient id="ng-ag-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#6b21a8"/></linearGradient></defs>
+          <circle cx="32" cy="32" r="30" fill="url(#ng-ag-grad)"/>
+          <path d="M 20 24 H 44 V 42 H 20 Z" fill="none" stroke="#fff" stroke-width="3"/>
+          <path d="M 26 30 H 38 M 26 36 H 38" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="22" cy="22" r="3" fill="#fff"/>
+          <circle cx="32" cy="22" r="3" fill="#fff"/>
+          <circle cx="42" cy="22" r="3" fill="#fff"/>
+        </svg>
+      </span>
+      <span class="brand-word">
+        <span class="info">Info</span><span class="relay">Relay</span><span class="dot">·</span>AssetGuard
+      </span>
+    </a>
+    <nav class="primary">
+      <a href="/#products">Platform</a>
+      <a href="#problem">Why it exists</a>
+      <a href="#features">Features</a>
+      <a href="#download" class="cta" style="background:linear-gradient(135deg,#a855f7,#6b21a8);">Download</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ── Hero ────────────────────────────────────────────────────────── -->
+<section class="hero-x ag">
+  <div class="wrap">
+    <h1>Find the IPs <span class="grad">eating your Tenable.sc license.</span><span class="beta-pill">BETA · v0.1</span></h1>
+    <p class="subhead">
+      Tenable counts every unique IP it has seen in the last 90 days. The UI
+      shows the total. It does not show you <em>which</em> IPs, <em>which</em>
+      repositories, or <em>why</em> the same hostname is eating 12 slots.
+      AssetGuard pulls that data via the REST API and gives you a one-page
+      answer.
+    </p>
+    <div class="cta-row">
+      <a href="#download" class="btn btn-primary">⬇ Download for Windows</a>
+      <a href="#problem" class="btn btn-ghost">Why this exists</a>
+    </div>
+    <div class="badges">
+      <span>Read-only — no purge in v0.1, no risk of bad clicks</span>
+      <span>Single 20 MB binary · no installer · UAC self-elevates</span>
+      <span>Talks only to your operator-specified SC</span>
+      <span>API-key auth · works air-gapped relative to internet</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── Why this exists ─────────────────────────────────────────────── -->
+<section class="s" id="problem">
+  <div class="wrap">
+    <span class="kicker" style="color:var(--ag-accent-soft);">Why it exists</span>
+    <h2>You're at 92% license utilization and you scan ~25% of what you own.</h2>
+    <p class="lede">If that sounds familiar, you're hitting one of these. AssetGuard tells you which.</p>
+
+    <div class="check-cols" style="margin-top:1.5rem;">
+      <div>
+        <h3 style="color:var(--ag-accent-soft);">🔁 DHCP churn</h3>
+        <ul>
+          <li>One laptop changes IP daily on the corp wifi</li>
+          <li>Each new IP = one license slot for 90 days</li>
+          <li>One physical host can eat 30-60 slots in a quarter</li>
+          <li>AssetGuard's Churn page lists every hostname-on-multiple-IPs</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="color:var(--ag-accent-soft);">🌐 Over-scoped discovery</h3>
+        <ul>
+          <li>Discovery scan set to <code>10.10.0.0/16</code></li>
+          <li>That includes a <code>/20</code> of guest wifi you forgot existed</li>
+          <li>500 throwaway phones now count against your license</li>
+          <li>AssetGuard's CIDR breakdown surfaces the over-represented ranges</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="color:var(--ag-accent-soft);">🕒 Stale data</h3>
+        <ul>
+          <li>Decommissioned hosts hang on for 90 days post-last-scan</li>
+          <li>Acquired/merged repositories bring ghosts forward</li>
+          <li>Mass IP renumbering doubles your count for a quarter</li>
+          <li>AssetGuard's Stale page sorts every IP by days-since-last-seen</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="color:var(--ag-accent-soft);">📊 Per-repo opacity</h3>
+        <ul>
+          <li>You have 8 repositories. Three of them are <em>old</em>.</li>
+          <li>Tenable shows you the total but not per-repo license share</li>
+          <li>AssetGuard's Repos overview has a bar chart — 30 seconds to spot the outlier</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Features ────────────────────────────────────────────────────── -->
+<section class="s alt" id="features">
+  <div class="wrap">
+    <span class="kicker" style="color:var(--ag-accent-soft);">v0.1 surface</span>
+    <h2>Six pages. One job: tell you the truth.</h2>
+
+    <div class="platform-grid" style="margin-top:1.5rem;">
+      <div class="platform-tile ag-pri">
+        <span class="icon">🏛</span>
+        <h3>Repos overview</h3>
+        <p>Every Tenable.sc repository, sorted by IP count. License-share bar shows which one is the biggest contributor at a glance.</p>
+      </div>
+      <div class="platform-tile ag-pri">
+        <span class="icon">🕒</span>
+        <h3>Stale IPs</h3>
+        <p>Configurable threshold (default 60 days). Sorted oldest-first. Severe-pill on anything 90+ days stale — the prime purge candidates.</p>
+      </div>
+      <div class="platform-tile ag-pri">
+        <span class="icon">🔁</span>
+        <h3>DHCP churn detector</h3>
+        <p>Same hostname on &gt;1 IP within the audit window. Each row tells you how many license slots one physical asset is eating.</p>
+      </div>
+      <div class="platform-tile ag-pri">
+        <span class="icon">🌐</span>
+        <h3>CIDR breakdown</h3>
+        <p>Group every IP by /24, /16, or any mask you choose. Find the subnet you didn't mean to scan in 10 seconds.</p>
+      </div>
+      <div class="platform-tile ag-pri">
+        <span class="icon">📜</span>
+        <h3>Audit log</h3>
+        <p>Append-only log of every API call AssetGuard made. Read-only trail for your security or compliance team.</p>
+      </div>
+      <div class="platform-tile coming">
+        <span class="tag-soon">v0.2</span>
+        <span class="icon">🧹</span>
+        <h3>Purge planner</h3>
+        <p>Dry-run-by-default, confirm-before-execute. Bulk-remove stale IPs from a chosen repository. The operator always clicks final-confirm.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Beta downloads ──────────────────────────────────────────────── -->
+<section class="s" id="download">
+  <div class="wrap">
+    <span class="kicker" style="color:var(--ag-accent-soft);">Get AssetGuard</span>
+    <h2>v0.1 beta · single binary · 20 MB</h2>
+    <p class="lede">No installer. Double-click → UAC self-elevates → native window opens on <code>127.0.0.1:9977</code>. Configure your SC URL + API keys, click Repos, done.</p>
+
+    <div class="download-card" style="border-color:rgba(168,85,247,0.35);background:linear-gradient(160deg, rgba(168,85,247,0.08) 0%, rgba(107,33,168,0.04) 100%);">
+      <div class="download-grid">
+        <a href="https://downloads.netguardir.com/assetguard/assetguard-0.1-windows-x64.zip" class="download-tile">
+          <div class="os">🪟 Windows</div>
+          <div class="desc">10/11 x64 · UAC self-elevate · WebView2</div>
+          <div class="filename">assetguard-0.1-windows-x64.zip</div>
+        </a>
+        <a href="https://downloads.netguardir.com/assetguard/assetguard-0.1-macos-arm64.zip" class="download-tile">
+          <div class="os">🍎 macOS</div>
+          <div class="desc">Apple Silicon · 13+</div>
+          <div class="filename">assetguard-0.1-macos-arm64.zip</div>
+        </a>
+        <a href="https://downloads.netguardir.com/assetguard/assetguard-0.1-linux-x86_64.zip" class="download-tile">
+          <div class="os">🐧 Linux</div>
+          <div class="desc">x86_64 · GTK + WebKit2</div>
+          <div class="filename">assetguard-0.1-linux-x86_64.zip</div>
+        </a>
+      </div>
+      <div class="install-walkthrough" style="background:rgba(168,85,247,0.06);border-color:rgba(168,85,247,0.25);">
+        <h3 style="color:var(--ag-accent-soft);">First-launch checklist</h3>
+        <ol>
+          <li>Download the platform zip + extract.</li>
+          <li>In your Tenable.sc UI: <strong>user icon → My Account → API Keys → Generate</strong>. Copy both Access Key + Secret Key (the Secret is shown only once).</li>
+          <li>Double-click the binary. UAC prompts on Windows — click <strong>Yes</strong>.</li>
+          <li>App opens on <code>127.0.0.1:9977</code>. Go to <strong>⚙ Settings</strong>, paste your SC URL + the two keys. Leave <em>Verify TLS</em> unchecked if your SC uses a corp-CA cert that isn't in your system trust store.</li>
+          <li>Click <strong>Save &amp; test connection</strong> — you'll see your SC version + the username AssetGuard is acting as.</li>
+          <li>Click <strong>Repos</strong> → first surface is your per-repo license-share breakdown.</li>
+        </ol>
+      </div>
+      <div class="download-meta">
+        Beta feedback: <a href="mailto:licensing@inforelay.ai?subject=AssetGuard%20beta%20feedback">licensing@inforelay.ai</a>.
+        Read-only in v0.1 — purge planner with dry-run + confirm lands in v0.2.
+      </div>
+    </div>
+
+    <p style="margin-top:1.5rem;text-align:center;color:var(--muted);font-size:0.85rem;">
+      Pricing not yet published — beta access is free. Production tiering will follow the InfoRelay family pattern (Solo / Team / Site, annual per SC).
+    </p>
+  </div>
+</section>
+
+<!-- ── Posture ─────────────────────────────────────────────────────── -->
+<section class="s alt">
+  <div class="wrap">
+    <span class="kicker" style="color:var(--ag-accent-soft);">Operating posture</span>
+    <h2>What AssetGuard does, and what it never does.</h2>
+    <div class="check-cols" style="margin-top:1.5rem;">
+      <div>
+        <h3 style="color:#86efac;">✓ Does</h3>
+        <ul>
+          <li>Talks only to the Tenable.sc URL you specify in Settings</li>
+          <li>Uses an API key you mint under your own SC user</li>
+          <li>Stores config + API keys at <code>~/.netguard/assetguard/sc.json</code> (chmod 0600 on POSIX)</li>
+          <li>Logs every API call to an append-only file you can audit</li>
+          <li>Binds only to <code>127.0.0.1:9977</code></li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="color:#fca5a5;">✗ Never does</h3>
+        <ul>
+          <li>No telemetry. No usage tracking. No phone-home.</li>
+          <li>No external API calls beyond your operator-specified SC</li>
+          <li>No installer, no service, no scheduled task created on install</li>
+          <li>No purge or modification of SC data in v0.1 (planner with confirm-execute in v0.2)</li>
+          <li>No external LLM. No SaaS dependency.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ──────────────────────────────────────────────────────── -->
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a href="/" class="brand" style="text-decoration:none;">
+          <span class="brand-word">
+            <span class="info">Info</span><span class="relay">Relay</span><span class="dot">·</span><span style="color:var(--ag-accent);">AssetGuard</span>
+          </span>
+        </a>
+        <p style="color:var(--ag-accent-soft); font-size:0.85rem; margin-top:0.5rem;">© 2026 InfoRelay LLC</p>
+      </div>
+      <div>
+        <h5>Family</h5>
+        <a href="/">All tools</a>
+        <a href="/certguard/">CertGuard</a>
+        <a href="/#products">NetGuard</a>
+      </div>
+      <div>
+        <h5>Company</h5>
+        <a href="mailto:hello@netguardir.com">Contact</a>
+        <a href="mailto:licensing@inforelay.ai">Licensing</a>
+      </div>
+      <div>
+        <h5>Posture</h5>
+        <a>Read-only v0.1</a>
+        <a>No telemetry</a>
+        <a>No external LLM</a>
+      </div>
+    </div>
+    <div class="bottom">
+      <div>InfoRelay AssetGuard™ · NetGuard™ · CertGuard™ are trademarks of InfoRelay LLC.</div>
+      <div>Beta software — pricing not yet published.</div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
