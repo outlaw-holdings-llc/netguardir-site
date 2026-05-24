@@ -109,16 +109,16 @@
               <span class="title">netguard — ~/audit · live SSH pull</span>
             </div>
             <div class="stage-body">
-              <div><span class="prompt">$</span> <span class="cmd">netguard --pull 10.50.0.12 --user scan --audit-after</span></div>
-              <div class="out">  Password for scan@10.50.0.12: <span style="color:#555">••••••••</span></div>
-              <div class="out">  <span class="info">→</span> SSH 10.50.0.12 · autodetected <span class="ok">cisco_xe</span></div>
-              <div class="out">  <span class="info">→</span> pulled 17,842 bytes · hostname <span class="ok">V1-9407R-1</span></div>
+              <div><span class="prompt">$</span> <span class="cmd">netguard --pull 10.0.0.10 --user scan --audit-after</span></div>
+              <div class="out">  Password for scan@10.0.0.10: <span style="color:#555">••••••••</span></div>
+              <div class="out">  <span class="info">→</span> SSH 10.0.0.10 · autodetected <span class="ok">cisco_xe</span></div>
+              <div class="out">  <span class="info">→</span> pulled 17,842 bytes · hostname <span class="ok">core-sw-01</span></div>
               <div class="out">  <span class="info">→</span> product: <span class="ok">IOS-XE_Switch</span> · STIG: NDM, L2S, RTR</div>
               <div class="out">  <span class="info">→</span> 153 rules · <span class="ok">10 PASS</span> · <span class="fail">6 FAIL</span> · 137 MANUAL</div>
               <div class="out">       MANUAL triage: <span class="info">35 N/A · 102 applicable · 0 unknown</span></div>
               <div class="out">  <span class="arrow">✓</span> <span class="fail">V-220544 FAIL</span> — vty 0 4 exec-timeout 9:59</div>
               <div class="out" style="padding-left:1.5rem">     <code style="color:#c0e0ff">line vty 0 4 / exec-timeout 5 0</code></div>
-              <div class="out">  <span class="arrow">✓</span> Saved: <span class="ok">V1-9407R-1-20260521.ckl · .annotated.cfg · .xlsx</span></div>
+              <div class="out">  <span class="arrow">✓</span> Saved: <span class="ok">core-sw-01-20260521.ckl · .annotated.cfg · .xlsx</span></div>
             </div>
           </div>
         </div>
@@ -140,8 +140,8 @@
             <span class="right">v0.1.34 · localhost:9999</span>
           </div>
           <div class="ui-body">
-            <div class="crumbs">Devices › <span>V1-9407R-1</span> › Audit (IOS-XE Switch)</div>
-            <h4>Audit results · V1-9407R-1 <span class="ui-pill ok" style="margin-left:0.4rem;">scanned just now</span></h4>
+            <div class="crumbs">Devices › <span>core-sw-01</span> › Audit (IOS-XE Switch)</div>
+            <h4>Audit results · core-sw-01 <span class="ui-pill ok" style="margin-left:0.4rem;">scanned just now</span></h4>
             <div class="ui-stats">
               <div class="ui-stat"><div class="n" style="color:#6ee7b7;">10</div><div class="l">PASS</div></div>
               <div class="ui-stat"><div class="n" style="color:#fca5a5;">6</div><div class="l">FAIL</div></div>
@@ -502,8 +502,17 @@
         <div class="answer">Less than most tools, by design. There's no installer — no MSI, no Windows service, no scheduled task, no registry writes, no auto-update mechanism. The binary's SHA-256 hash IS the entire baseline artifact your ISSO has to track.</div>
       </details>
       <details>
-        <summary>Licensing model?</summary>
-        <div class="answer">Per-site tiered: <strong>Standard</strong> (100 devices), <strong>Pro</strong> (250), <strong>Enterprise</strong> (1,000+). Ed25519-signed license file with hardware-fingerprint binding. Evaluation tier ships unrestricted for 30 days.</div>
+        <summary>Licensing model + pricing?</summary>
+        <div class="answer">
+          Annual subscription, Ed25519-signed license file dropped next to the binary, validated offline against an embedded public key. No phone-home, no hardware-fingerprint coupling that breaks on a re-image. Each license file specifies an allowed version range — your installed binary keeps working forever, but lapsed customers can't grab newer builds.<br><br>
+          <strong>NetGuard</strong> — per-site, by device count:<br>
+          <code>Standard</code> 100 devices · <code>Pro</code> 250 · <code>Enterprise</code> unlimited.<br><br>
+          <strong>CertGuard</strong> — per-issuing-CA, annual:<br>
+          <code>Solo</code> 1 CA · <strong>$1,995/yr</strong><br>
+          <code>Team</code> 5 CAs · <strong>$5,995/yr</strong><br>
+          <code>Site</code> unlimited CAs · <strong>$14,995/yr</strong><br><br>
+          30-day evaluation tier ships unrestricted. <a href="mailto:hello@netguardir.com?subject=Quote%20request">Request a quote →</a>
+        </div>
       </details>
     </div>
   </div>

@@ -136,11 +136,11 @@
               <div class="out">  <span class="acc">→</span> InfoRelay CertGuard 0.1 · GUI on 127.0.0.1:9988</div>
               <div class="out"></div>
               <div class="out">  <span class="acc">▸</span> PKI Topology ▾ → Bulk enrollment (CSV)</div>
-              <div class="out">  <span class="acc">▸</span> Uploaded fleet.csv · 35 rows · CA: ICA-NMC</div>
+              <div class="out">  <span class="acc">▸</span> Uploaded fleet.csv · 35 rows · CA: Issuing-CA-Web</div>
               <div class="out">  <span class="acc">▸</span> Running... <span class="info">[ ████████████░░░░ ] 28 / 35</span></div>
-              <div class="out">       <span class="ok">✓ axis-cam-01.nmc.local</span> · .pem + .key</div>
-              <div class="out">       <span class="ok">✓ axis-cam-02.nmc.local</span> · .pem + .key</div>
-              <div class="out">       <span class="ok">✓ axis-cam-03.nmc.local</span> · .pem + .key</div>
+              <div class="out">       <span class="ok">✓ axis-cam-01.corp.local</span> · .pem + .key</div>
+              <div class="out">       <span class="ok">✓ axis-cam-02.corp.local</span> · .pem + .key</div>
+              <div class="out">       <span class="ok">✓ axis-cam-03.corp.local</span> · .pem + .key</div>
               <div class="out">       …</div>
               <div class="out">  <span class="acc">✓</span> 35 / 35 issued · <code style="color:#c0e0ff">C:\certs\axis-fleet\</code></div>
             </div>
@@ -181,11 +181,11 @@
               <div class="cm-canvas">
                 <!-- Root CA -->
                 <div class="cm-ca root" style="grid-column:1/3; grid-row:1;">
-                  <div class="cm-ca-hdr"><strong>OCA-SBX</strong> · offline root</div>
+                  <div class="cm-ca-hdr"><strong>Offline-Root-CA</strong> · offline root</div>
                 </div>
-                <!-- ICA-NMC compound (healthy border) -->
+                <!-- Issuing-CA-Web compound (healthy border) -->
                 <div class="cm-ca issuing healthy" style="grid-column:1; grid-row:2;">
-                  <div class="cm-ca-hdr"><strong>ICA-NMC</strong> · 47 certs</div>
+                  <div class="cm-ca-hdr"><strong>Issuing-CA-Web</strong> · 47 certs</div>
                   <div class="cm-cert-row">
                     <span class="cm-dot ok"></span><span class="cm-dot ok"></span><span class="cm-dot ok"></span>
                     <span class="cm-dot ok"></span><span class="cm-dot ok"></span><span class="cm-dot ok"></span>
@@ -195,9 +195,9 @@
                     <span class="cm-dot ok"></span><span class="cm-dot ok"></span>
                   </div>
                 </div>
-                <!-- ICA-IESS compound (one ≤30d cert → orange border) -->
+                <!-- Issuing-CA-User compound (one ≤30d cert → orange border) -->
                 <div class="cm-ca issuing warn30" style="grid-column:2; grid-row:2;">
-                  <div class="cm-ca-hdr"><strong>ICA-IESS</strong> · 35 certs</div>
+                  <div class="cm-ca-hdr"><strong>Issuing-CA-User</strong> · 35 certs</div>
                   <div class="cm-cert-row">
                     <span class="cm-dot ok"></span><span class="cm-dot ok"></span><span class="cm-dot ok"></span>
                     <span class="cm-dot ok"></span><span class="cm-dot ok"></span><span class="cm-dot ok"></span>
@@ -206,9 +206,9 @@
                     <span class="cm-dot urgent selected"></span>
                   </div>
                 </div>
-                <!-- ICA-OLD-NMC compound (all expired → red border) -->
+                <!-- Issuing-CA-Web-Legacy compound (all expired → red border) -->
                 <div class="cm-ca issuing expired" style="grid-column:1; grid-row:3;">
-                  <div class="cm-ca-hdr"><strong>ICA-OLD-NMC</strong> · 14 expired</div>
+                  <div class="cm-ca-hdr"><strong>Issuing-CA-Web-Legacy</strong> · 14 expired</div>
                   <div class="cm-cert-row">
                     <span class="cm-dot exp"></span><span class="cm-dot exp"></span><span class="cm-dot exp"></span>
                     <span class="cm-dot exp"></span><span class="cm-dot exp"></span><span class="cm-dot exp"></span>
@@ -227,13 +227,13 @@
               <!-- Side detail panel (a cert is selected) -->
               <aside class="cm-side">
                 <div style="display:flex;justify-content:space-between;align-items:center;">
-                  <strong style="font-size:0.82rem;">dc-iess-02.iess.local</strong>
+                  <strong style="font-size:0.82rem;">dc-02.corp.local</strong>
                   <span style="color:var(--muted);font-size:0.72rem;">✕</span>
                 </div>
                 <span class="ui-pill warn" style="background:#ea580c;color:#0a0c12;margin-top:0.3rem;display:inline-block;">≤30d</span>
                 <table class="cm-kv">
                   <tr><td>Host</td><td><code>dc-iess-02</code></td></tr>
-                  <tr><td>Issuer</td><td><code>ICA-IESS</code></td></tr>
+                  <tr><td>Issuer</td><td><code>Issuing-CA-User</code></td></tr>
                   <tr><td>Not after</td><td><code>2026-06-19</code></td></tr>
                   <tr><td>Days left</td><td style="color:#fb923c;">27d</td></tr>
                   <tr><td>SANs</td><td><code>+3</code></td></tr>
@@ -560,7 +560,7 @@
       </details>
       <details>
         <summary>What about multiple domains?</summary>
-        <div class="answer">The CA inventory captures a per-CA <strong>domain</strong> field that becomes the NTLM realm. You can have <code>ICA-NMC</code> on <code>NMC\admin</code> and <code>ICA-IESS</code> on <code>IESS\admin</code> side by side in the same CertGuard install.</div>
+        <div class="answer">The CA inventory captures a per-CA <strong>domain</strong> field that becomes the NTLM realm. You can have <code>Issuing-CA-Web</code> on <code>CORP\admin</code> and a second CA on a separate <code>CORP-LAB\admin</code> realm side by side in the same CertGuard install.</div>
       </details>
       <details>
         <summary>Can I use it without ever talking to a CA?</summary>
@@ -572,7 +572,7 @@
       </details>
       <details>
         <summary>What if my domain controller is STIG'd and blocks RootDSE?</summary>
-        <div class="answer">Discover AD certs has three fallback layers for base-DN auto-discovery: <code>Server.info</code> (works on most), raw RootDSE search with <code>check_names=False</code> (handles ldap3 schema-validation rejection), and last-ditch derivation from the NTLM domain (<code>NMC</code> → <code>DC=nmc,DC=local</code>). If all three fail, type the Base DN explicitly in the form.</div>
+        <div class="answer">Discover AD certs has three fallback layers for base-DN auto-discovery: <code>Server.info</code> (works on most), raw RootDSE search with <code>check_names=False</code> (handles ldap3 schema-validation rejection), and last-ditch derivation from the NTLM domain (<code>CORP</code> → <code>DC=corp,DC=local</code>). If all three fail, type the Base DN explicitly in the form.</div>
       </details>
     </div>
   </div>
