@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>InfoRelay ScoreGuard — DoD Cyber Hygiene Scorecard automation</title>
+<meta name="description" content="Stop hand-merging PowerShell CSVs into the 334FY23 Cyber Maintenance Hardening Scorecard. Import → preview → fill manual sections → export populated workbook. Single offline binary, no installer, no telemetry.">
+<link rel="icon" href="/scoreguard/favicon.png" type="image/png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/assets/styles.css">
+<style>
+  /* ScoreGuard cyan-accent overrides — same brand spine as the rest of
+     the InfoRelay family, cyan to distinguish the scorecard tool. */
+  :root {
+    --sg-accent: #06b6d4;
+    --sg-accent-soft: #67e8f9;
+    --sg-accent-dark: #0e7490;
+  }
+  .hero-x.sg h1 .grad { background: linear-gradient(110deg, #fff 30%, #67e8f9 60%, #06b6d4 90%); background-clip: text; -webkit-background-clip: text; color: transparent; }
+  .sg .btn-primary { background: linear-gradient(135deg, #06b6d4 0%, #0e7490 100%); box-shadow: 0 6px 20px rgba(6,182,212,0.3); }
+  .sg .btn-primary:hover { box-shadow: 0 10px 28px rgba(6,182,212,0.45); }
+  .platform-tile.sg-pri { border-color: rgba(6,182,212,0.45); }
+  .sg .stat-cell .num { background: linear-gradient(135deg, #fff 0%, #67e8f9 100%); background-clip: text; -webkit-background-clip: text; color: transparent; }
+  .sg .uc-card .fix { background: rgba(6,182,212,0.10); border-left-color: #06b6d4; }
+  .sg .uc-card .fix strong { color: #67e8f9; }
+  .beta-pill { display: inline-block; background: rgba(6,182,212,0.16); color: #67e8f9; border: 1px solid rgba(6,182,212,0.4); padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; margin-left: 0.6em; vertical-align: middle; }
+</style>
+</head>
+<body class="sg">
+
+<!-- ── Utility top bar ─────────────────────────────────────────────── -->
+<div class="utilbar">
+  <div class="wrap">
+    <div class="util-left">
+      <a href="/">InfoRelay</a><span class="sep">/</span>
+      <a href="/scoreguard/">ScoreGuard</a>
+    </div>
+    <div class="util-right">
+      <a href="#download">Downloads</a>
+      <span class="sep">·</span>
+      <a href="mailto:licensing@inforelay.ai">Contact</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── Main nav ────────────────────────────────────────────────────── -->
+<header class="site">
+  <div class="wrap">
+    <a href="/" class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <defs><linearGradient id="ng-sg-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#0e7490"/></linearGradient></defs>
+          <rect x="6" y="6" width="52" height="52" rx="12" fill="url(#ng-sg-grad)"/>
+          <path d="M16 22 H48 M16 30 H48 M16 38 H40 M16 46 H44" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity="0.85"/>
+          <circle cx="48" cy="46" r="6.5" fill="#fff"/>
+          <path d="M44 46 L47 49 L52 43" stroke="#0e7490" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span class="brand-word">
+        <span class="info">Info</span><span class="relay">Relay</span><span class="dot">·</span>ScoreGuard
+      </span>
+    </a>
+    <nav class="primary">
+      <a href="/#products">Platform</a>
+      <a href="#problem">Why it exists</a>
+      <a href="#features">Features</a>
+      <a href="#download" class="cta" style="background:linear-gradient(135deg,#06b6d4,#0e7490);">Download</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ── Hero ────────────────────────────────────────────────────────── -->
+<section class="hero-x sg">
+  <div class="wrap">
+    <h1>DoD Cyber Hygiene Scorecard automation.<br><span class="grad">Stop hand-merging CSVs into Excel.</span><span class="beta-pill">BETA · v0.1</span></h1>
+    <p class="subhead">
+      Your monthly 334FY23 Cyber Maintenance Hardening Scorecard takes hours
+      of copying PowerShell CSV output across three Excel files. ScoreGuard
+      ingests the same per-server local-user CSVs + the AD-audit CSV you
+      already produce, auto-populates Sections 1 + 3, walks you through the
+      manual sections, and emits a paste-ready workbook with provenance for
+      every cell.
+    </p>
+    <div class="cta-row">
+      <a href="#download" class="btn btn-primary">⬇ Download for Windows</a>
+      <a href="#problem" class="btn btn-ghost">Why this exists</a>
+    </div>
+    <div class="badges">
+      <span>Local-only · talks to nothing outside your machine</span>
+      <span>Single 17 MB binary · no installer · UAC self-elevates</span>
+      <span>Drop-in for your existing PowerShell + batch workflow</span>
+      <span>DoD CUI-safe by design · no telemetry</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── Why this exists ─────────────────────────────────────────────── -->
+<section class="s" id="problem">
+  <div class="wrap">
+    <span class="kicker" style="color:var(--sg-accent-soft);">Why it exists</span>
+    <h2>The monthly scorecard takes hours and accumulates mistakes.</h2>
+    <p class="lede">If your current workflow involves scheduled tasks, batch files, and a chain of three Excel workbooks before the final scorecard, ScoreGuard collapses it to four steps.</p>
+
+    <div class="check-cols" style="margin-top:1.5rem;">
+      <div>
+        <h3 style="color:var(--sg-accent-soft);">📜 Today: PowerShell + batch + Excel</h3>
+        <ul>
+          <li>Scheduled task on every Windows Server 2022 emits a per-host local-user CSV</li>
+          <li>Scheduled task on a DC dumps an AD-audit CSV (Priv / Disabled / NMC / Active / Service / Computers)</li>
+          <li>Batch files consolidate to a share folder</li>
+          <li>Three intermediate Excel files pivot it for the final paste</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="color:var(--sg-accent-soft);">⚠ The pain</h3>
+        <ul>
+          <li>Manual merge is error-prone — a missed row drifts the percentage</li>
+          <li>Privileged-group rules ("NMC Admins", "RSA Exempt") encoded as cell formulas</li>
+          <li>Each scorecard revision means re-checking every site's columns</li>
+          <li>You can't diff against last month — there's no source of truth</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="color:var(--sg-accent-soft);">✓ With ScoreGuard</h3>
+        <ul>
+          <li>Drop the same CSVs your scripts already produce — no workflow change</li>
+          <li>Privileged-group + MFA + PKI rules configured per env in Settings</li>
+          <li>Sections 1 + 3 auto-computed; manual entry for Sections 4-8</li>
+          <li>History snapshots persist every month for next-month diffs</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="color:var(--sg-accent-soft);">🎯 Audience</h3>
+        <ul>
+          <li>ISSOs / ISSMs running the scorecard on a recurring cycle</li>
+          <li>Cyber teams whose orgs use the 334FY23 template</li>
+          <li>Sites already using the MS-script + AD-dump pattern</li>
+          <li>Anyone tired of opening Excel three times to make one number</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Features ────────────────────────────────────────────────────── -->
+<section class="s alt" id="features">
+  <div class="wrap">
+    <span class="kicker" style="color:var(--sg-accent-soft);">v0.1 surface</span>
+    <h2>Four steps. 47 cells. One job: a paste-ready scorecard.</h2>
+
+    <h3 style="font-family:var(--font-display);font-size:1rem;margin:1.5rem 0 0.5rem;color:var(--sg-accent-soft);letter-spacing:0.06em;text-transform:uppercase;">The monthly flow</h3>
+    <div class="platform-grid">
+      <div class="platform-tile sg-pri">
+        <span class="icon">📥</span>
+        <h3>Import</h3>
+        <p>Drop per-server local-user CSVs + the AD-audit CSV. Tab- or comma-separated; tolerant of column-name variations. Re-uploading a server's CSV replaces its previous parse.</p>
+      </div>
+      <div class="platform-tile sg-pri">
+        <span class="icon">🔍</span>
+        <h3>Preview</h3>
+        <p>Every computed cell shown with its provenance — auto / manual / empty. PKI counts, RSA SecurID totals, password-only-priv breakdown, server-2022 counts, all derived live.</p>
+      </div>
+      <div class="platform-tile sg-pri">
+        <span class="icon">✍</span>
+        <h3>Manual</h3>
+        <p>Sections 4-8 — ATO (eMASS), endpoint (ePO), STIG CAT-I, IAVA, Cyber Awareness % — captured in one form. Values persist between sessions.</p>
+      </div>
+      <div class="platform-tile sg-pri">
+        <span class="icon">📤</span>
+        <h3>Export</h3>
+        <p>Multi-sheet xlsx — Overview + per-section + Legend. Color-coded rows (auto/manual/empty) so you can paste straight into the official 334FY23 template.</p>
+      </div>
+      <div class="platform-tile sg-pri">
+        <span class="icon">🗂</span>
+        <h3>History</h3>
+        <p>Every export freezes the draft + the xlsx under <code>~/.netguard/scoreguard/history/</code>. Re-download any month or diff against the prior baseline.</p>
+      </div>
+    </div>
+
+    <h3 style="font-family:var(--font-display);font-size:1rem;margin:1.75rem 0 0.5rem;color:var(--sg-accent-soft);letter-spacing:0.06em;text-transform:uppercase;">Configurable per environment</h3>
+    <div class="platform-grid">
+      <div class="platform-tile sg-pri">
+        <span class="icon">⚙</span>
+        <h3>Privileged-group rules</h3>
+        <p>List the local + AD groups that should flag a user as privileged ("Administrators", "NMC Admins", "Splunk Administrators", etc.). One per line.</p>
+      </div>
+      <div class="platform-tile sg-pri">
+        <span class="icon">🔑</span>
+        <h3>MFA / IFS group mappings</h3>
+        <p>Map an AD group to its MFA solution label ("RSA Exempt = RSA SecurID"). Counts flow into the per-solution sub-cells.</p>
+      </div>
+      <div class="platform-tile sg-pri">
+        <span class="icon">🚫</span>
+        <h3>Default-account exclusions</h3>
+        <p>DefaultAccount, Guest, WDAGUtilityAccount, krbtgt — configurable; different orgs have different factory defaults.</p>
+      </div>
+    </div>
+
+    <h3 style="font-family:var(--font-display);font-size:1rem;margin:1.75rem 0 0.5rem;color:var(--sg-accent-soft);letter-spacing:0.06em;text-transform:uppercase;">Coming next</h3>
+    <div class="platform-grid">
+      <div class="platform-tile coming">
+        <span class="tag-soon">v0.2</span>
+        <span class="icon">📡</span>
+        <h3>Live LDAP + WinRM push mode</h3>
+        <p>Skip the PowerShell scripts entirely — ScoreGuard queries AD + every Server 2022 host directly. Same UI, opt-in toggle.</p>
+      </div>
+      <div class="platform-tile coming">
+        <span class="tag-soon">v0.3</span>
+        <span class="icon">📊</span>
+        <h3>Fill the official template in place</h3>
+        <p>Drop in your site's copy of the 334FY23 xlsx; ScoreGuard fills the cells in their target positions, preserving formatting.</p>
+      </div>
+      <div class="platform-tile coming">
+        <span class="tag-soon">v0.3</span>
+        <span class="icon">🔄</span>
+        <h3>Drift detection</h3>
+        <p>Diff this month's numbers against last month's snapshot — flag spikes in disabled-priv counts or sudden ATO regressions.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Beta downloads ──────────────────────────────────────────────── -->
+<section class="s" id="download">
+  <div class="wrap">
+    <span class="kicker" style="color:var(--sg-accent-soft);">Get ScoreGuard</span>
+    <h2>v0.1 beta · single binary · ~17 MB</h2>
+    <p class="lede">No installer. Double-click → UAC self-elevates → native window opens on <code>127.0.0.1:9966</code>. Configure your org metadata + privileged-group rules, drop your CSVs, export.</p>
+
+    <div class="download-card" style="border-color:rgba(6,182,212,0.35);background:linear-gradient(160deg, rgba(6,182,212,0.08) 0%, rgba(14,116,144,0.04) 100%);">
+      <div class="download-grid">
+        <a href="https://downloads.netguardir.com/scoreguard/scoreguard-0.1-windows-x64.zip" class="download-tile">
+          <div class="os">🪟 Windows</div>
+          <div class="desc">10/11 x64 · UAC self-elevate · WebView2</div>
+          <div class="filename">scoreguard-0.1-windows-x64.zip</div>
+        </a>
+        <a href="https://downloads.netguardir.com/scoreguard/scoreguard-0.1-macos-arm64.zip" class="download-tile">
+          <div class="os">🍎 macOS</div>
+          <div class="desc">Apple Silicon · 13+</div>
+          <div class="filename">scoreguard-0.1-macos-arm64.zip</div>
+        </a>
+        <a href="https://downloads.netguardir.com/scoreguard/scoreguard-0.1-linux-x86_64.zip" class="download-tile">
+          <div class="os">🐧 Linux</div>
+          <div class="desc">x86_64 · GTK + WebKit2</div>
+          <div class="filename">scoreguard-0.1-linux-x86_64.zip</div>
+        </a>
+      </div>
+      <div class="install-walkthrough" style="background:rgba(6,182,212,0.06);border-color:rgba(6,182,212,0.25);">
+        <h3 style="color:var(--sg-accent-soft);">First-launch checklist</h3>
+        <ol>
+          <li>Download the platform zip + extract.</li>
+          <li>Double-click the binary. UAC prompts on Windows — click <strong>Yes</strong>.</li>
+          <li>App opens on <code>127.0.0.1:9966</code>. Open <strong>⚙ Settings</strong>; fill in org name + your privileged-group rules + MFA-group mappings.</li>
+          <li>Click <strong>📥 Import</strong> → upload your monthly per-server local-user CSVs (one per server) and the AD-audit CSV. Hostnames are extracted from filenames.</li>
+          <li>Click <strong>🔍 Preview</strong> to see auto-computed Sections 1 + 3. Then <strong>✍ Manual</strong> for Sections 4-8.</li>
+          <li>Click <strong>📤 Export</strong> → download the workbook and snapshot to history.</li>
+        </ol>
+      </div>
+      <div class="download-meta">
+        Beta feedback: <a href="mailto:licensing@inforelay.ai?subject=ScoreGuard%20beta%20feedback">licensing@inforelay.ai</a>.
+        Drop-in for your existing CSV-producing scripts — v0.2 will add live LDAP + WinRM and let you retire the scheduled-task chain.
+      </div>
+    </div>
+
+    <p style="margin-top:1.5rem;text-align:center;color:var(--muted);font-size:0.85rem;">
+      Pricing not yet published — beta access is free. Production tiering will follow the InfoRelay family pattern (Solo / Team / Site, annual per site).
+    </p>
+  </div>
+</section>
+
+<!-- ── Posture ─────────────────────────────────────────────────────── -->
+<section class="s alt">
+  <div class="wrap">
+    <span class="kicker" style="color:var(--sg-accent-soft);">Operating posture</span>
+    <h2>What ScoreGuard does, and what it never does.</h2>
+    <div class="check-cols" style="margin-top:1.5rem;">
+      <div>
+        <h3 style="color:#86efac;">✓ Does</h3>
+        <ul>
+          <li>Parses local-user CSVs + AD-audit CSV you already produce</li>
+          <li>Computes scorecard cells locally — provenance on every value</li>
+          <li>Stores draft + history under <code>~/.netguard/scoreguard/</code></li>
+          <li>Logs every action to an append-only audit file you can review</li>
+          <li>Binds only to <code>127.0.0.1:9966</code></li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="color:#fca5a5;">✗ Never does</h3>
+        <ul>
+          <li>No telemetry. No usage tracking. No phone-home.</li>
+          <li>No outbound network — your CUI data never leaves the host</li>
+          <li>No installer, no service, no scheduled task created on install</li>
+          <li>No external LLM. No SaaS dependency.</li>
+          <li>No automatic upload of generated workbooks anywhere</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ──────────────────────────────────────────────────────── -->
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a href="/" class="brand" style="text-decoration:none;">
+          <span class="brand-word">
+            <span class="info">Info</span><span class="relay">Relay</span><span class="dot">·</span><span style="color:var(--sg-accent);">ScoreGuard</span>
+          </span>
+        </a>
+        <p style="color:var(--sg-accent-soft); font-size:0.85rem; margin-top:0.5rem;">© 2026 InfoRelay LLC</p>
+      </div>
+      <div>
+        <h5>Family</h5>
+        <a href="/">All tools</a>
+        <a href="/assetguard/">AssetGuard</a>
+        <a href="/certguard/">CertGuard</a>
+        <a href="/#products">NetGuard</a>
+      </div>
+      <div>
+        <h5>Company</h5>
+        <a href="mailto:hello@netguardir.com">Contact</a>
+        <a href="mailto:licensing@inforelay.ai">Licensing</a>
+      </div>
+      <div>
+        <h5>Posture</h5>
+        <a>Local-only v0.1</a>
+        <a>No telemetry</a>
+        <a>No external LLM</a>
+      </div>
+    </div>
+    <div class="bottom">
+      <div>InfoRelay ScoreGuard™ · AssetGuard™ · NetGuard™ · CertGuard™ are trademarks of InfoRelay LLC.</div>
+      <div>Beta software — pricing not yet published.</div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
