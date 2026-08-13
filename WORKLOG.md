@@ -1,5 +1,42 @@
 # netguardir.com — WORKLOG
 
+## 2026-05-25 01:25 — ScoreGuard page + Vault placeholder + 334FY23 scrub
+
+### Done
+
+- **`/scoreguard/index.html` (new)** — full mirror of `/assetguard/` layout with cyan accent (cyan-500 → cyan-700). Hero, "Why it exists", 4-step features grid, configurable-per-environment grid, "coming next" tiles, download grid (3 platforms), posture section, footer with family cross-links. `/scoreguard/favicon.png` from the build dir.
+- **Homepage tile (`index.html:204+`)** — added ScoreGuard tile in family grid right after AssetGuard, cyan `tag-live` pill. Reads "DoD Cyber Hygiene Scorecard automation. Import CSVs → preview → fill manual sections → export a paste-ready Cyber Maintenance Hardening Scorecard workbook."
+- **NetGuard Vault placeholder (`index.html:215+`)** — slotted in the family grid between Drift and Multi-vendor, 2026 Q4 timing, 🗄 icon. Per Chris: STIG requires automated config backup; gold-image restore is part of the spec.
+- **Scrubbed every `334FY23` reference site-wide** — Chris flagged it's an old file reference; the official name is just "Cyber Maintenance Hardening Scorecard". 5 mentions on /scoreguard/ page + 1 on homepage tile description.
+- Three Cloudflare Pages deploys via `wrangler pages deploy . --project-name=netguardir --branch=main` (per [[netguardir-pages-deploy]] — apex only serves production branch). Live URL each time → apex.
+- All three commits in `/root/outlaw-holdings/netguardir.com`:
+  - `70b99d4` Add ScoreGuard product page + homepage tile
+  - `983d955` Add NetGuard Vault placeholder tile
+  - `57a7c39` ScoreGuard: drop 334FY23 file reference, use full template name
+
+### Decisions made + why
+
+- **Vault name (not "Backup", "Archive", "Restore")** — implies safekeeping + gold-image as one concept; matches the trust positioning of the family naming.
+- **NetGuard Vault 2026 Q4** — Chris said "easy to build at some point" → low urgency, but the STIG-requirement framing makes it adjacent to NetGuard Audit's value prop. Slotted with Drift so they cluster as "config-state-related" tools.
+- **Mirror AssetGuard layout for /scoreguard/** — Chris's [[netguardir-mirror-product]] rule: ship product UI → update site mockup same session. AssetGuard is the closest sibling (also BETA, also ISSO-targeted, also `licensing@inforelay.ai` contact).
+
+### Tried but rejected
+
+- (none)
+
+### Open / Next session
+
+1. **Pricing page** — still pending across the whole family; Chris hasn't decided.
+2. **Comparison page** — "vs Tenable Nessus / SC for STIG audit" was in the prior backlog; still open.
+3. **CertGuard Request-Access flow → other products** — currently only CertGuard uses gated access; ScoreGuard/AssetGuard ship open binaries. Revisit when license enforcement code is built.
+
+### Watch out for
+
+- **NEVER write `334FY23` in any new ScoreGuard copy** (page, email, README) — it's an old file reference. Use "Cyber Maintenance Hardening Scorecard".
+- All other [[netguardir-pages-deploy]] gotchas still apply: production branch is `main` NOT `master`; downloads served from `/var/www/netguardir-downloads/` via nginx vhost, NOT Pages; commits need `-c user.email=... -c user.name=...` per-call (no global git config).
+
+---
+
 ## 2026-05-24 18:30 — CertGuard public binary pulled · Request Access flow live
 
 ### Done

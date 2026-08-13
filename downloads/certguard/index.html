@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Download CertGuard — InfoRelay</title>
+<meta name="description" content="Latest CertGuard release. .zip downloads for STIG-friendly environments. Activation key required; 30-day trial included.">
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/assets/styles.css">
+<style>
+  :root {
+    --cg-accent: #16a34a;
+    --cg-accent-soft: #34d399;
+  }
+  .dl-hero { padding: 64px 0 32px; }
+  .dl-hero h1 { font-size: 2.4rem; margin: 0 0 8px; }
+  .dl-hero .grad { background: linear-gradient(110deg, #fff 30%, #34d399 60%, #16a34a 90%); background-clip: text; -webkit-background-clip: text; color: transparent; }
+  .ver-pill {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.35rem 0.8rem; border-radius: 999px;
+    background: rgba(22,163,74,0.15); color: #86efac;
+    font-family: var(--font-mono); font-size: 0.85rem;
+    border: 1px solid rgba(22,163,74,0.35);
+  }
+  .key-form {
+    background: linear-gradient(160deg, rgba(22,163,74,0.10), rgba(20,83,45,0.04));
+    border: 1px solid rgba(22,163,74,0.35); border-radius: 12px;
+    padding: 24px 28px; margin: 32px 0;
+  }
+  .key-form h2 { color: #86efac; margin-top: 0; }
+  .key-form label { display: block; font-weight: 600; margin: 0.4rem 0 0.3rem; color: #cbd5e1; }
+  .key-form input[type=text] {
+    width: 100%; padding: 12px 14px;
+    background: rgba(15,23,42,0.6); color: #fff;
+    border: 1px solid var(--line); border-radius: 8px;
+    font-family: var(--font-mono); font-size: 1rem;
+    letter-spacing: 0.05em;
+  }
+  .key-form .hint { color: #94a3b8; font-size: 0.85rem; margin: 0.4rem 0; }
+  .platform-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 18px; margin: 24px 0; }
+  .platform-card {
+    background: var(--bg-soft);
+    border: 1px solid var(--line); border-radius: 12px;
+    padding: 22px; transition: border-color 0.2s, transform 0.2s;
+  }
+  .platform-card:hover { border-color: rgba(22,163,74,0.45); transform: translateY(-2px); }
+  .platform-card .os { display: flex; align-items: center; gap: 0.5rem; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.4rem; }
+  .platform-card .arch { color: var(--fg-soft); font-size: 0.85rem; font-family: var(--font-mono); margin-bottom: 1rem; }
+  .platform-card .size { color: var(--fg-soft); font-size: 0.82rem; margin-bottom: 0.8rem; }
+  .platform-card .dl-btn {
+    display: block; text-align: center; padding: 12px;
+    background: linear-gradient(135deg, #16a34a, #166534); color: #fff;
+    border-radius: 8px; text-decoration: none; font-weight: 600;
+    margin-bottom: 0.6rem;
+    box-shadow: 0 4px 14px rgba(22,163,74,0.25);
+  }
+  .platform-card .dl-btn:hover { box-shadow: 0 6px 22px rgba(22,163,74,0.4); }
+  .platform-card .dl-btn[disabled],
+  .platform-card .dl-btn.disabled {
+    background: rgba(148,163,184,0.18); color: #94a3b8;
+    cursor: not-allowed; box-shadow: none;
+  }
+  .platform-card .sha-row {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    color: var(--fg-soft); word-break: break-all;
+    background: rgba(15,23,42,0.4); padding: 6px 8px; border-radius: 4px;
+  }
+  .platform-card .sha-label { color: #86efac; font-weight: 600; margin-right: 0.4rem; }
+  .activation-box {
+    background: rgba(96,165,250,0.06);
+    border: 1px solid rgba(96,165,250,0.35); border-radius: 12px;
+    padding: 24px 28px; margin: 32px 0;
+  }
+  .activation-box h2 { color: #93c5fd; margin-top: 0; }
+  .activation-box ol { line-height: 1.8; padding-left: 1.2rem; }
+  .activation-box code { background: rgba(15,23,42,0.5); padding: 2px 6px; border-radius: 3px; }
+  .stig-banner {
+    background: rgba(22,163,74,0.10);
+    border-left: 4px solid #16a34a;
+    padding: 14px 18px; border-radius: 0 8px 8px 0;
+    margin: 20px 0;
+    font-size: 0.92rem;
+  }
+  .stig-banner strong { color: #86efac; }
+  .changelog-list {
+    list-style: none; padding: 0; margin: 0;
+    display: grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap: 14px;
+  }
+  .changelog-list li {
+    background: var(--bg-soft); border: 1px solid var(--line);
+    border-left: 3px solid var(--cg-accent);
+    border-radius: 8px; padding: 14px 16px;
+  }
+  .changelog-list .v { font-family: var(--font-mono); color: #86efac; font-weight: 700; font-size: 0.92rem; margin-bottom: 0.3rem; }
+  .changelog-list .what { font-size: 0.92rem; color: var(--fg-soft); line-height: 1.5; }
+  .verify-box {
+    background: rgba(15,23,42,0.5); border: 1px solid var(--line);
+    border-radius: 8px; padding: 14px 18px; margin: 20px 0;
+    font-family: var(--font-mono); font-size: 0.8rem;
+  }
+  .verify-box .lbl { color: var(--cg-accent-soft); font-weight: 700; }
+</style>
+  <link rel="canonical" href="https://netguardir.com/downloads/certguard/" />
+</head>
+<body class="cg">
+
+<!-- Utility bar -->
+<div class="utilbar">
+  <div class="wrap">
+    <div class="util-left">
+      <a href="/">InfoRelay</a><span class="sep">/</span>
+      <a href="/certguard/">CertGuard</a><span class="sep">·</span>
+      <span>Downloads</span>
+    </div>
+    <div class="util-right">
+      <a href="/docs/user-guide.html">Docs</a>
+      <span class="sep">·</span>
+      <a href="mailto:licensing@inforelay.ai">licensing@inforelay.ai</a>
+    </div>
+  </div>
+</div>
+
+<!-- Hero -->
+<section class="dl-hero">
+  <div class="wrap">
+    <p class="ver-pill">⬇ Latest release · v0.1.92</p>
+    <h1>Download <span class="grad">CertGuard</span></h1>
+    <p class="lede">
+      Single-file binary wrapped in a STIG-friendly <code>.zip</code>.
+      Activation-key gated. No installer. No service. 30-day trial unlocked
+      from first launch.
+    </p>
+
+    <div class="stig-banner">
+      <strong>✓ STIG-friendly distribution.</strong> All builds are delivered as <code>.zip</code> archives — the only filetype your SWG / proxy will let through on DoW-hardened endpoints. No <code>.exe</code> direct downloads anywhere on this page.
+    </div>
+  </div>
+</section>
+
+<!-- Activation key form + per-platform buttons -->
+<section>
+  <div class="wrap">
+
+    <div class="key-form">
+      <h2>1 · Enter your activation key</h2>
+      <p class="hint">Format: <code>CG-XXXX-XXXX-XXXX-XXXX</code>. Don't have one? Email <a href="mailto:licensing@inforelay.ai?subject=CertGuard%20activation%20request&amp;body=Org%3A%20%0AContact%3A%20%0APlatform%20(Win%2FMac%2FLinux)%3A%20%0ATier%20(Solo%2FTeam%2FSite)%3A%20" style="color:#86efac;">licensing@inforelay.ai</a> — same business day turnaround.</p>
+      <label for="cg-key">Activation key</label>
+      <input id="cg-key" type="text" placeholder="CG-XXXX-XXXX-XXXX-XXXX"
+             autocomplete="off" spellcheck="false"
+             oninput="updateDownloadButtons()">
+      <p class="hint" id="key-status" style="margin-top:0.6rem;">Paste your key above — download buttons activate once it matches the expected format.</p>
+    </div>
+
+    <h2 style="margin-top:32px;">2 · Pick your platform</h2>
+    <div class="platform-grid">
+
+      <!-- Windows -->
+      <div class="platform-card">
+        <div class="os">🪟 Windows</div>
+        <div class="arch">x86_64 · Windows 10 / 11 / Server 2019+</div>
+        <div class="size">~25 MB · .zip wraps a single .exe · no installer, no admin install required</div>
+        <a class="dl-btn disabled" data-platform="windows" data-base-href="https://licensing.netguardir.com/v1/download/windows" href="#" onclick="return guardClick(this)">
+          ⬇ certguard-0.1-windows-x64.zip
+        </a>
+        <div class="sha-row">
+          <span class="sha-label">SHA-256:</span>1320c2fb5017598021c153a9d6b64c9a634c3c3b93a29635025ba2265aed9e99
+        </div>
+      </div>
+
+      <!-- macOS -->
+      <div class="platform-card">
+        <div class="os">🍎 macOS</div>
+        <div class="arch">arm64 · Apple Silicon (M1/M2/M3/M4)</div>
+        <div class="size">~23 MB · .zip wraps a single mach-O · double-click to launch</div>
+        <a class="dl-btn disabled" data-platform="macos" data-base-href="https://licensing.netguardir.com/v1/download/macos" href="#" onclick="return guardClick(this)">
+          ⬇ certguard-0.1-macos-arm64.zip
+        </a>
+        <div class="sha-row">
+          <span class="sha-label">SHA-256:</span>89ff420cee48ac6a4d2dc1ec104c73d9a0547537d69d3fae98d6a666c239bc2f
+        </div>
+      </div>
+
+      <!-- Linux -->
+      <div class="platform-card">
+        <div class="os">🐧 Linux</div>
+        <div class="arch">x86_64 · glibc 2.31+ (Ubuntu 20.04+ / RHEL 8+)</div>
+        <div class="size">~36 MB · .zip wraps a single ELF · chmod +x · run anywhere</div>
+        <a class="dl-btn disabled" data-platform="linux" data-base-href="https://licensing.netguardir.com/v1/download/linux" href="#" onclick="return guardClick(this)">
+          ⬇ certguard-0.1-linux-x86_64.zip
+        </a>
+        <div class="sha-row">
+          <span class="sha-label">SHA-256:</span>026604f40107750b213d064a6cdea9acdbf9e8bb275dffb17abeeee62d15750b
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Verify after download -->
+    <div class="verify-box">
+      <div class="lbl">After download — verify the .zip integrity, then unzip:</div>
+      <div style="margin-top: 6px;">
+        Windows: <code>certutil -hashfile certguard-0.1-windows-x64.zip SHA256</code> then right-click → Extract All<br>
+        macOS:&nbsp;&nbsp; <code>shasum -a 256 certguard-0.1-macos-arm64.zip</code> then <code>unzip certguard-0.1-macos-arm64.zip</code><br>
+        Linux:&nbsp;&nbsp; <code>sha256sum certguard-0.1-linux-x86_64.zip</code> then <code>unzip certguard-0.1-linux-x86_64.zip</code>
+      </div>
+    </div>
+
+    <!-- Activation steps -->
+    <div class="activation-box">
+      <h2>3 · Launch + activate</h2>
+      <ol>
+        <li><strong>Run the unzipped binary.</strong> Windows: double-click; UAC self-elevates. macOS: <code>xattr -d com.apple.quarantine certguard-0.1-macos-arm64</code> if Gatekeeper objects. Linux: <code>chmod +x certguard-0.1-linux-x86_64</code> then run.</li>
+        <li><strong>30-day trial starts automatically</strong> from first launch — all features unlocked, no activation needed to evaluate.</li>
+        <li><strong>Activate for ongoing use:</strong> CertGuard → <em>Admin → Licensing</em> → paste your activation key. Online activation needs one outbound HTTPS reach to <code>licensing.netguardir.com</code>; the license caches locally and works fully offline thereafter. SCIF / air-gapped installs can use the offline file-drop path instead.</li>
+        <li><strong>Same key, all platforms.</strong> The activation key gates both this .zip download and the in-app license activation — so you can re-download on a new machine or after losing the file, no portal account.</li>
+      </ol>
+    </div>
+
+    <!-- Recent changes -->
+    <h2 style="margin-top:48px;">Recent changes</h2>
+    <p class="lede" style="margin-top:0.5rem;">Last 6 releases. Full release notes on each version's GitHub Releases page (URL: <code>github.com/researchvialsus-stack/inforelay-certguard/releases/tag/v0.1.X</code>) — accessible from any browser, no auth required.</p>
+    <ul class="changelog-list">
+      <li>
+        <div class="v">v0.1.92</div>
+        <div class="what">Splunk KV Store recipe gap-fill from official Splunk docs; offline cert troubleshooter for <code>server.pem</code> bundles (paste → 9 checks against Splunk's documented requirements).</div>
+      </li>
+      <li>
+        <div class="v">v0.1.88</div>
+        <div class="what">Splunk KV Store template — DoW show-stopper recipe. Make-Me-a-Cert wizard one-click use case auto-seeds 127.0.0.1 + localhost SANs + dual EKU.</div>
+      </li>
+      <li>
+        <div class="v">v0.1.87</div>
+        <div class="what">Autoenroll per-host diagnostic. WinRM probe walks GPO → time → policy → events → CA reach in order; one-line "broken at X because Y. Fix: Z" verdict.</div>
+      </li>
+      <li>
+        <div class="v">v0.1.86</div>
+        <div class="what">CA database cleanup orchestrator. Phased certutil -deleterow scripts (green/yellow/red) with confirm-token safety + per-row plain-English deletability reasons.</div>
+      </li>
+      <li>
+        <div class="v">v0.1.84</div>
+        <div class="what">Magnifying-glass / Where-Used global search. Ctrl+K spotlight across certs, CAs, projects, campaigns, audit. Cisco-FMC pattern, applied to PKI.</div>
+      </li>
+      <li>
+        <div class="v">v0.1.83</div>
+        <div class="what">Cert chain validation debugger. Walks issuer→subject, identifies break codes (MISSING_ANCHOR / EXPIRED / SIGNATURE_INVALID / NOT_CA / EKU_INSUFFICIENT) with trust-store cross-check.</div>
+      </li>
+    </ul>
+
+    <p style="margin-top:32px;text-align:center;">
+      <a href="/certguard/" class="btn btn-ghost">← Back to CertGuard product page</a>
+    </p>
+
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-cols">
+      <div>
+        <strong>InfoRelay</strong><br>
+        <a href="/">Home</a><br>
+        <a href="/certguard/">CertGuard</a><br>
+        <a href="/assetguard/">AssetGuard</a><br>
+        <a href="/scoreguard/">ScoreGuard</a>
+      </div>
+      <div>
+        <strong>CertGuard</strong><br>
+        <a href="/downloads/certguard/">Downloads</a><br>
+        <a href="/docs/user-guide.html">Docs</a><br>
+        <a href="/certguard/#usecases">Use cases</a><br>
+        <a href="/certguard/#download">Pricing</a>
+      </div>
+      <div>
+        <strong>Contact</strong><br>
+        <a href="mailto:licensing@inforelay.ai">licensing@inforelay.ai</a><br>
+        <a href="mailto:support@inforelay.ai">support@inforelay.ai</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Activation-key validator + button enabler.
+// Format: CG-XXXX-XXXX-XXXX-XXXX (uppercase alphanumeric)
+const KEY_RE = /^CG-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/;
+
+function getKey() {
+  return (document.getElementById('cg-key').value || '').trim().toUpperCase();
+}
+
+function updateDownloadButtons() {
+  const key = getKey();
+  const status = document.getElementById('key-status');
+  const valid = KEY_RE.test(key);
+  document.querySelectorAll('.dl-btn').forEach(btn => {
+    if (valid) {
+      btn.classList.remove('disabled');
+      const base = btn.getAttribute('data-base-href');
+      btn.href = base + '?key=' + encodeURIComponent(key);
+    } else {
+      btn.classList.add('disabled');
+      btn.href = '#';
+    }
+  });
+  if (!key) {
+    status.textContent = 'Paste your key above — download buttons activate once it matches the expected format.';
+    status.style.color = '#94a3b8';
+  } else if (valid) {
+    status.textContent = '✓ Key format valid — click your platform below to download.';
+    status.style.color = '#86efac';
+  } else {
+    status.textContent = 'Key format must match CG-XXXX-XXXX-XXXX-XXXX (uppercase letters + digits).';
+    status.style.color = '#fcd34d';
+  }
+}
+
+function guardClick(el) {
+  if (el.classList.contains('disabled')) {
+    alert('Enter your activation key above first. Format: CG-XXXX-XXXX-XXXX-XXXX. Email licensing@inforelay.ai if you don\'t have one.');
+    document.getElementById('cg-key').focus();
+    return false;
+  }
+  return true; // allow navigation
+}
+
+// Pre-fill key from ?key= query param so post-purchase emails can include
+// a one-click link to this page with the key pre-loaded.
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const prefill = params.get('key');
+  if (prefill) {
+    document.getElementById('cg-key').value = prefill.toUpperCase();
+    updateDownloadButtons();
+  }
+})();
+</script>
+
+</body>
+</html>

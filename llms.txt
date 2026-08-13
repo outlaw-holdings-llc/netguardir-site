@@ -1,0 +1,20 @@
+# InfoRelay NetGuard
+
+> InfoRelay builds offline, single-binary security tools for air-gapped and DoD/DoW networks — no installer, no admin rights, no external network calls. The flagship, NetGuard, is a catalog-driven DISA Cisco STIG audit tool that pulls device config over SSH, triages findings, and emits STIG Viewer CKL output entirely offline. The product family (NetGuard, CertGuard, AssetGuard, ScoreGuard) shares that same air-gap-first, no-MSI design because SWAB software-approval pain is the real constraint in these environments.
+
+All products run as a single portable binary with an offline Ed25519 license file. They are built for classified, disconnected, and STIG-hardened Windows/Cisco environments where connected-cloud tools can't go.
+
+## Products
+- [NetGuard — Offline Cisco STIG Audit](https://netguardir.com/): Catalog-driven DISA Cisco STIG audit, fully offline. Live SSH-pull, intelligent L2 triage, STIG Viewer CKL output, and a Deviation engine (expected-vs-actual) for Cisco IOS/NX-OS. Modules: Audit, Trace, Drift, Inventory, Vault, multi-vendor roadmap.
+- [CertGuard — Windows CA Certificate Toolkit](https://netguardir.com/certguard/): Active-Directory-aware certificate and CA management for Windows PKI — Where-Used discovery, CA-database cleanup, autoenrollment diagnostics, Splunk KV Store export, and safe CA retirement/migration with blast-radius analysis. Air-gapped, single binary, ~10% of the TCO of enterprise cert managers.
+- [CertGuard vs CyberArk Certificate Manager](https://netguardir.com/certguard/vs-cyberark/): An honest comparison — where CertGuard wins (air-gap, single binary, cost) and where CyberArk is still the right tool (HSM-backed issuance, large connected enterprises).
+- [CertGuard procurement one-pager](https://netguardir.com/certguard/one-pager/): A single-page summary for buyers and contracting.
+- [AssetGuard — Tenable.sc Operator's Toolbox](https://netguardir.com/assetguard/): Role-aware toolbox over the full Tenable.sc REST surface for ISSOs and vulnerability-management operators.
+- [ScoreGuard — DoD Cyber Maintenance Scorecard](https://netguardir.com/scoreguard/): Automates the DoD cyber maintenance hardening scorecard across multi-domain Active Directory, headless and schedulable.
+
+## Documentation
+- [User Guide](https://netguardir.com/docs/user-guide): Getting started, licensing, and operation for the NetGuard family.
+- [CertGuard downloads](https://netguardir.com/downloads/certguard/): Current CertGuard release downloads (delivered as .zip for STIG-proxy compatibility).
+
+## About
+InfoRelay LLC builds offline network- and PKI-security tooling for defense and air-gapped environments. NetGuard™ and CertGuard™ are trademarks of InfoRelay LLC. Licensing and sales: licensing@inforelay.ai / sales@inforelay.ai.
